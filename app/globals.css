@@ -1,0 +1,476 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyan-neon: #00E0FF;
+  --color-purple-electric: #4D00FF;
+  --color-matrix-green: #00FF41;
+  --color-cyber-black: #050505;
+  --color-cyber-dark: #0a0a0a;
+  
+  --font-orbitron: var(--font-orbitron), 'Orbitron', sans-serif;
+  --font-rajdhani: var(--font-rajdhani), 'Rajdhani', sans-serif;
+  --font-inter: var(--font-inter), 'Inter', sans-serif;
+}
+
+/* Theme Variables */
+:root {
+  --primary-neon: #00E0FF;
+  --primary-glow: rgba(0, 224, 255, 0.6);
+  --primary-rgb: 0, 224, 255;
+}
+
+/* ============================================
+   THEME: GREEN (Matrix)
+   ============================================ */
+[data-theme="green"] {
+  --primary-neon: #00FF41;
+  --primary-glow: rgba(0, 255, 65, 0.6);
+  --primary-rgb: 0, 255, 65;
+}
+
+[data-theme="green"] .neon-text-cyan,
+[data-theme="green"] .text-cyan-neon {
+  color: #00FF41;
+  text-shadow: 0 0 10px #00FF41, 0 0 20px #00FF41;
+}
+
+[data-theme="green"] .border-cyan-neon {
+  border-color: #00FF41;
+}
+
+[data-theme="green"] .bg-cyan-neon {
+  background-color: #00FF41;
+}
+
+[data-theme="green"] .hover\:border-cyan-neon:hover {
+  border-color: #00FF41;
+}
+
+[data-theme="green"] .hover\:text-cyan-neon:hover {
+  color: #00FF41;
+}
+
+[data-theme="green"] ::-webkit-scrollbar-thumb {
+  background: #00FF41;
+}
+
+/* ============================================
+   THEME: RED (Neon Red)
+   ============================================ */
+[data-theme="red"] {
+  --primary-neon: #FF0040;
+  --primary-glow: rgba(255, 0, 64, 0.6);
+  --primary-rgb: 255, 0, 64;
+}
+
+[data-theme="red"] .neon-text-cyan,
+[data-theme="red"] .text-cyan-neon {
+  color: #FF0040;
+  text-shadow: 0 0 10px #FF0040, 0 0 20px #FF0040;
+}
+
+[data-theme="red"] .border-cyan-neon {
+  border-color: #FF0040;
+}
+
+[data-theme="red"] .bg-cyan-neon {
+  background-color: #FF0040;
+}
+
+[data-theme="red"] .hover\:border-cyan-neon:hover {
+  border-color: #FF0040;
+}
+
+[data-theme="red"] .hover\:text-cyan-neon:hover {
+  color: #FF0040;
+}
+
+[data-theme="red"] ::-webkit-scrollbar-thumb {
+  background: #FF0040;
+}
+
+[data-theme="red"] .shadow-\[0_0_20px_\#00E0FF\],
+[data-theme="red"] .shadow-\[0_0_40px_rgba\(0\,224\,255\,0\.6\)\] {
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+}
+
+/* ============================================
+   THEME: GOLD (Cyber Gold)
+   ============================================ */
+[data-theme="gold"] {
+  --primary-neon: #FFD700;
+  --primary-glow: rgba(255, 215, 0, 0.6);
+  --primary-rgb: 255, 215, 0;
+}
+
+[data-theme="gold"] .neon-text-cyan,
+[data-theme="gold"] .text-cyan-neon {
+  color: #FFD700;
+  text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+}
+
+[data-theme="gold"] .border-cyan-neon {
+  border-color: #FFD700;
+}
+
+[data-theme="gold"] .bg-cyan-neon {
+  background-color: #FFD700;
+}
+
+[data-theme="gold"] .hover\:border-cyan-neon:hover {
+  border-color: #FFD700;
+}
+
+[data-theme="gold"] .hover\:text-cyan-neon:hover {
+  color: #FFD700;
+}
+
+[data-theme="gold"] ::-webkit-scrollbar-thumb {
+  background: #FFD700;
+}
+
+[data-theme="gold"] .shadow-\[0_0_20px_\#00E0FF\],
+[data-theme="gold"] .shadow-\[0_0_40px_rgba\(0\,224\,255\,0\.6\)\] {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+
+/* Hide default cursor on desktop */
+@media (hover: hover) {
+  * {
+    cursor: none !important;
+  }
+}
+
+body {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  background-color: #050505;
+  color: #E8E8E8;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+.heading-font {
+  font-family: var(--font-orbitron), 'Orbitron', sans-serif;
+}
+
+.sub-font {
+  font-family: var(--font-rajdhani), 'Rajdhani', sans-serif;
+}
+
+/* Neon Border Effects */
+.neon-border-cyan {
+  border: 1px solid rgba(0, 224, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 224, 255, 0.1);
+}
+
+.neon-border-cyan:hover {
+  border: 1px solid rgba(0, 224, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 224, 255, 0.4);
+}
+
+/* Neon Text Effects */
+.neon-text-cyan {
+  text-shadow: 0 0 10px #00E0FF, 0 0 20px #00E0FF, 0 0 30px #00E0FF;
+}
+
+.neon-text-purple {
+  text-shadow: 0 0 10px #4D00FF, 0 0 20px #4D00FF, 0 0 30px #4D00FF;
+}
+
+.neon-text-green {
+  text-shadow: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+}
+
+/* Matrix Background */
+.matrix-bg {
+  background: linear-gradient(rgba(5, 5, 5, 0.9), rgba(5, 5, 5, 0.9)),
+    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 255, 65, 0.03) 1px, rgba(0, 255, 65, 0.03) 2px);
+  background-size: 100% 3px;
+}
+
+/* Glitch Effect */
+.glitch {
+  position: relative;
+}
+
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 2px;
+  text-shadow: -1px 0 #4D00FF;
+  top: 0;
+  color: white;
+  background: black;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+  animation: noise-anim 2s infinite linear alternate-reverse;
+}
+
+@keyframes noise-anim {
+  0% { clip: rect(41px, 9999px, 3px, 0); }
+  20% { clip: rect(12px, 9999px, 88px, 0); }
+  40% { clip: rect(78px, 9999px, 44px, 0); }
+  60% { clip: rect(14px, 9999px, 56px, 0); }
+  80% { clip: rect(92px, 9999px, 2px, 0); }
+  100% { clip: rect(2px, 9999px, 98px, 0); }
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Blink Animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+/* Slow Spin */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-neon, #00E0FF);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-neon, #00E0FF);
+}
+
+/* Circuit Lines Background */
+.circuit-lines {
+  background-image: radial-gradient(rgba(0, 224, 255, 0.1) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+/* Timeline Animations */
+.timeline-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-item:hover {
+  transform: translateY(-4px);
+}
+
+/* Focus States for Accessibility */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--primary-neon, #00E0FF);
+  outline-offset: 2px;
+}
+
+/* Skip to content link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #00E0FF;
+  color: black;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-pulse,
+  .animate-spin-slow,
+  .animate-blink {
+    animation: none !important;
+  }
+}
+
+/* Touch-friendly elements for mobile */
+@media (max-width: 640px) {
+  .timeline-item {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  button, 
+  [role="button"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Show default cursor on mobile */
+  * {
+    cursor: auto !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .timeline-item {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Prize Card Optimizations */
+.prize-card,
+.timeline-item,
+.tilt-card {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Custom scrollbar for modal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 224, 255, 0.5);
+  border-radius: 3px;
+}
+
+/* Stroke text effect */
+.stroke-text {
+  -webkit-text-stroke: 1px rgba(0, 224, 255, 0.3);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(0, 224, 255, 0.3);
+  color: white;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .neon-text-cyan,
+  .neon-text-purple,
+  .neon-text-green {
+    text-shadow: none;
+  }
+  
+  .border-neutral-800 {
+    border-color: #666;
+  }
+}
+
+/* Print styles */
+@media print {
+  .matrix-bg,
+  .circuit-lines {
+    background: white !important;
+  }
+  
+  * {
+    color: black !important;
+    background: white !important;
+  }
+}
+
+
+/* ============================================
+   ANIMATED GRADIENT TEXT
+   ============================================ */
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    var(--primary-neon, #00E0FF) 0%,
+    #ffffff 25%,
+    #4D00FF 50%,
+    #ffffff 75%,
+    var(--primary-neon, #00E0FF) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s linear infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Slower variant */
+.gradient-text-slow {
+  background: linear-gradient(
+    90deg,
+    var(--primary-neon, #00E0FF) 0%,
+    #ffffff 50%,
+    var(--primary-neon, #00E0FF) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+
+/* ============================================
+   BACK TO TOP ANIMATION
+   ============================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   SCROLL PROGRESS GLOW
+   ============================================ */
+.scroll-progress-glow {
+  box-shadow: 0 0 10px var(--primary-neon), 0 0 20px var(--primary-neon);
+}
