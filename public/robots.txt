@@ -1,0 +1,13 @@
+# HackGear 2.0 - Robots.txt
+# https://hackgear2.vercel.app
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://hackgear2.vercel.app/sitemap.xml
+
+# Disallow admin/api routes if any
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
