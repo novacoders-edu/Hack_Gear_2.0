@@ -2,94 +2,107 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export const Countdown = ({ targetDate }) => {
+export const Countdown = ({ targetDate, compact = false }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    
     const calculateTimeLeft = () => {
       const difference = new Date(targetDate) - new Date();
       
       if (difference > 0) {
-        return {
+        setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
           hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
           minutes: Math.floor((difference / 1000 / 60) % 60),
           seconds: Math.floor((difference / 1000) % 60)
-        };
+        });
       }
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     };
 
-    setTimeLeft(calculateTimeLeft());
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
   }, [targetDate]);
 
   const timeUnits = [
-    { label: 'DAYS', value: timeLeft.days, color: 'cyan-neon' },
-    { label: 'HOURS', value: timeLeft.hours, color: 'purple-electric' },
-    { label: 'MINS', value: timeLeft.minutes, color: 'matrix-green' },
-    { label: 'SECS', value: timeLeft.seconds, color: 'white' }
+    { label: 'DAYS', value: timeLeft.days },
+    { label: 'HRS', value: timeLeft.hours },
+    { label: 'MIN', value: timeLeft.minutes },
+    { label: 'SEC', value: timeLeft.seconds }
   ];
 
-  if (!isClient) return null;
+  if (compact) {
+    return (
+      <div className="flex justify-between gap-2">
+        {timeUnits.map((unit, idx) => (
+          <div key={unit.label} className="flex-1 text-center">
+            <motion.div
+              key={unit.value}
+              initial={{ scale: 1.1, opacity: 0.5 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="heading-font text-xl sm:text-2xl md:text-3xl font-black text-white"
+            >
+              {String(unit.value).padStart(2, '0')}
+            </motion.div>
+            <p className="sub-font text-[7px] sm:text-[8px] text-neutral-500 uppercase tracking-wider mt-0.5">
+              {unit.label}
+            </p>
+            {idx < timeUnits.length - 1 && (
+              <motion.span
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-cyan-neon/50 text-lg hidden"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                :
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-wrap justify-start gap-2 sm:gap-3 md:gap-4">
+    <div className="flex justify-center gap-3 sm:gap-4 md:gap-6">
       {timeUnits.map((unit, idx) => (
-        <motion.div
-          key={unit.label}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
-          className="relative"
-        >
-          <div className={`
-            relative p-2 sm:p-3 md:p-4 min-w-[60px] sm:min-w-[70px] md:min-w-[80px]
-            border border-neutral-700 bg-black/60 backdrop-blur-sm rounded
-            hover:border-cyan-neon/50 transition-all duration-300
-          `}>
-            {/* Glowing corners */}
-            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-neon/50"></div>
-            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-cyan-neon/50"></div>
-            <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-cyan-neon/50"></div>
-            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-neon/50"></div>
+        <div key={unit.label} className="relative text-center">
+          <div className="p-3 sm:p-4 md:p-6 border border-neutral-800 bg-black/50 backdrop-blur-sm rounded-lg relative overflow-hidden group">
+            {/* Glow effect on hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-cyan-neon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
             <motion.div
               key={unit.value}
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className={`heading-font text-2xl sm:text-3xl md:text-4xl font-black text-center`}
-              style={{
-                color: unit.color === 'cyan-neon' ? '#00E0FF' :
-                       unit.color === 'purple-electric' ? '#4D00FF' :
-                       unit.color === 'matrix-green' ? '#00FF41' : '#fff',
-                textShadow: unit.color === 'cyan-neon' ? '0 0 15px #00E0FF' :
-                           unit.color === 'purple-electric' ? '0 0 15px #4D00FF' :
-                           unit.color === 'matrix-green' ? '0 0 15px #00FF41' : '0 0 15px #fff'
-              }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="heading-font text-2xl sm:text-3xl md:text-5xl font-black text-white relative z-10"
             >
               {String(unit.value).padStart(2, '0')}
             </motion.div>
-            
-            <div className="sub-font text-[8px] sm:text-[9px] md:text-[10px] text-neutral-500 text-center mt-1 tracking-[0.2em]">
-              {unit.label}
-            </div>
           </div>
-        </motion.div>
+          <p className="sub-font text-[8px] sm:text-[10px] md:text-xs text-neutral-500 uppercase tracking-[0.2em] mt-2">
+            {unit.label}
+          </p>
+          
+          {idx < timeUnits.length - 1 && (
+            <motion.span
+              className="absolute -right-2 sm:-right-3 top-1/3 text-cyan-neon text-xl sm:text-2xl font-bold"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              :
+            </motion.span>
+          )}
+        </div>
       ))}
     </div>
   );
 };
+
+export default Countdown;
