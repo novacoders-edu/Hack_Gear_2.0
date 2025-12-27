@@ -1,4 +1,3 @@
-// filepath: f:\projects\hg2\hackgear\hackgear\components\Hero.js
 "use client"
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
@@ -8,281 +7,451 @@ import { GlitchText } from './GlitchText';
 // Lazy load Spline component
 const Spline = lazy(() => import('@splinetool/react-spline'));
 
-// Circular visual component (fallback)
+// Compact Circular visual component
 const CircularVisual = () => (
-  <div className="relative w-full max-w-[280px] sm:max-w-[350px] lg:max-w-[400px] xl:max-w-[450px] aspect-square mx-auto">
+  <div className="relative w-full max-w-[200px] sm:max-w-[250px] lg:max-w-[280px] xl:max-w-[320px] aspect-square mx-auto">
+    {/* Ambient glow */}
+    <div className="absolute inset-0 bg-gradient-radial from-cyan-neon/20 via-transparent to-transparent blur-2xl" />
+    
     {/* Outer rotating ring */}
     <motion.div
-      className="absolute inset-0 border-2 border-cyan-neon/30 rounded-full"
+      className="absolute inset-0 border border-cyan-neon/20 rounded-full"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+    >
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-cyan-neon/60 rounded-full"
+          style={{
+            top: '50%',
+            left: '50%',
+            transform: `rotate(${i * 45}deg) translateY(-50%) translateX(-50%)`,
+            transformOrigin: '0 0',
+          }}
+          initial={{ opacity: 0.3 }}
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+        />
+      ))}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-cyan-neon rounded-full shadow-[0_0_15px_#00E0FF]" />
+    </motion.div>
+
+    {/* Secondary ring */}
+    <motion.div
+      className="absolute inset-3 sm:inset-4 border border-purple-electric/30 rounded-full"
+      animate={{ rotate: -360 }}
+      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+    >
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-electric rounded-full shadow-[0_0_10px_#4D00FF]" />
+    </motion.div>
+
+    {/* Third ring */}
+    <motion.div
+      className="absolute inset-6 sm:inset-8 border border-matrix-green/40 rounded-full overflow-hidden"
       animate={{ rotate: 360 }}
       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
     >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-cyan-neon rounded-full shadow-[0_0_20px_#00E0FF]"></div>
+      <motion.div
+        className="absolute inset-0 border-t-2 border-matrix-green/80 rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      />
     </motion.div>
 
-    {/* Middle rotating ring */}
+    {/* Inner ring with scanning effect */}
     <motion.div
-      className="absolute inset-6 sm:inset-8 border border-purple-electric/40 rounded-full"
+      className="absolute inset-10 sm:inset-14 border border-white/10 rounded-full"
       animate={{ rotate: -360 }}
       transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
     >
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-purple-electric rounded-full shadow-[0_0_15px_#4D00FF]"></div>
-    </motion.div>
-
-    {/* Inner rotating ring */}
-    <motion.div
-      className="absolute inset-12 sm:inset-16 border border-matrix-green/50 rounded-full"
-      animate={{ rotate: 360 }}
-      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-    >
-      <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-matrix-green rounded-full shadow-[0_0_10px_#00FF41]"></div>
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: 'conic-gradient(from 0deg, transparent 0%, rgba(0, 224, 255, 0.3) 10%, transparent 20%)'
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+      />
     </motion.div>
 
     {/* Center hexagon */}
-    <div className="absolute inset-16 sm:inset-20 lg:inset-24 flex items-center justify-center">
+    <div className="absolute inset-12 sm:inset-16 lg:inset-20 flex items-center justify-center">
       <motion.div
         className="relative"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 3, repeat: Infinity }}
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       >
-        <svg viewBox="0 0 100 100" className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
-          <polygon
+        <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 relative z-10">
+          <motion.polygon
             points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
             fill="none"
-            stroke="#00E0FF"
-            strokeWidth="1"
-            className="drop-shadow-[0_0_10px_#00E0FF]"
+            stroke="url(#hexGradient)"
+            strokeWidth="1.5"
+            animate={{ strokeDashoffset: [0, -20] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            strokeDasharray="5 5"
           />
           <polygon
             points="50,15 85,32.5 85,67.5 50,85 15,67.5 15,32.5"
-            fill="rgba(0,224,255,0.1)"
+            fill="rgba(0,0,0,0.8)"
             stroke="#4D00FF"
             strokeWidth="0.5"
           />
-          <text x="50" y="55" textAnchor="middle" fill="#00E0FF" fontSize="12" fontFamily="monospace" className="font-bold">
-            HG 2.0
+          <text x="50" y="46" textAnchor="middle" fill="#00E0FF" fontSize="7" fontFamily="monospace" className="font-bold uppercase">
+            HACKGEAR
           </text>
+          <text x="50" y="60" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontFamily="monospace" className="font-black">
+            2.0
+          </text>
+          <defs>
+            <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#00E0FF" />
+              <stop offset="50%" stopColor="#4D00FF" />
+              <stop offset="100%" stopColor="#00FF41" />
+            </linearGradient>
+          </defs>
         </svg>
       </motion.div>
     </div>
 
-    {/* Stats floating around - Hidden on mobile, visible on tablet+ */}
+    {/* Floating data cards - Compact */}
     <motion.div
-      className="hidden sm:block absolute -top-2 right-0 px-2 py-1 sm:px-3 sm:py-2 bg-black/80 border border-cyan-neon/30 rounded"
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3, repeat: Infinity }}
+      className="hidden sm:flex absolute -top-2 right-0 lg:right-2 flex-col gap-0.5 px-2 py-1.5 bg-black/90 border border-cyan-neon/40 rounded-md backdrop-blur-sm"
+      animate={{ y: [0, -5, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
-      <p className="sub-font text-[8px] sm:text-[10px] text-neutral-500">PARTICIPANTS</p>
-      <p className="heading-font text-sm sm:text-lg text-cyan-neon">500+</p>
+      <div className="flex items-center gap-1.5">
+        <motion.div 
+          className="w-1 h-1 bg-matrix-green rounded-full"
+          animate={{ scale: [1, 1.5, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        <p className="sub-font text-[7px] text-neutral-500 uppercase tracking-wider">PARTICIPANTS</p>
+      </div>
+      <p className="heading-font text-sm text-cyan-neon font-black">500+</p>
     </motion.div>
 
     <motion.div
-      className="hidden sm:block absolute -bottom-2 left-0 px-2 py-1 sm:px-3 sm:py-2 bg-black/80 border border-purple-electric/30 rounded"
-      animate={{ y: [0, 10, 0] }}
-      transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+      className="hidden sm:flex absolute -bottom-2 left-0 lg:left-2 flex-col gap-0.5 px-2 py-1.5 bg-black/90 border border-purple-electric/40 rounded-md backdrop-blur-sm"
+      animate={{ y: [0, 5, 0] }}
+      transition={{ duration: 4, repeat: Infinity, delay: 0.5, ease: "easeInOut" }}
     >
-      <p className="sub-font text-[8px] sm:text-[10px] text-neutral-500">PRIZE_POOL</p>
-      <p className="heading-font text-sm sm:text-lg text-purple-electric">₹TBA</p>
+      <div className="flex items-center gap-1.5">
+        <motion.div 
+          className="w-1 h-1 bg-purple-electric rounded-full"
+          animate={{ scale: [1, 1.5, 1] }}
+          transition={{ duration: 1, repeat: Infinity, delay: 0.3 }}
+        />
+        <p className="sub-font text-[7px] text-neutral-500 uppercase tracking-wider">PRIZE_POOL</p>
+      </div>
+      <p className="heading-font text-sm text-purple-electric font-black">₹25K+</p>
     </motion.div>
 
     <motion.div
-      className="hidden sm:block absolute top-1/2 -right-4 sm:-right-6 px-2 py-1 sm:px-3 sm:py-2 bg-black/80 border border-matrix-green/30 rounded"
-      animate={{ x: [0, 10, 0] }}
-      transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+      className="hidden lg:flex absolute top-1/2 -translate-y-1/2 -right-8 flex-col gap-0.5 px-2 py-1.5 bg-black/90 border border-matrix-green/40 rounded-md backdrop-blur-sm"
+      animate={{ x: [0, 5, 0] }}
+      transition={{ duration: 4, repeat: Infinity, delay: 1, ease: "easeInOut" }}
     >
-      <p className="sub-font text-[8px] sm:text-[10px] text-neutral-500">DURATION</p>
-      <p className="heading-font text-sm sm:text-lg text-matrix-green">8 HRS</p>
+      <div className="flex items-center gap-1.5">
+        <motion.div 
+          className="w-1 h-1 bg-cyan-neon rounded-full"
+          animate={{ scale: [1, 1.5, 1] }}
+          transition={{ duration: 1, repeat: Infinity, delay: 0.6 }}
+        />
+        <p className="sub-font text-[7px] text-neutral-500 uppercase tracking-wider">DURATION</p>
+      </div>
+      <p className="heading-font text-sm text-matrix-green font-black">8 HRS</p>
     </motion.div>
   </div>
 );
 
 // Spline 3D component wrapper
-const Spline3DVisual = ({ onLoad, onError }) => {
-  return (
-    <div className="w-full h-[400px] lg:h-[500px] xl:h-[550px]">
-      <Suspense fallback={null}>
-        <Spline
-          scene="https://prod.spline.design/kZT9hc8pv6Ztw3QJ/scene.splinecode"
-          onLoad={onLoad}
-          onError={onError}
-        />
-      </Suspense>
-    </div>
-  );
-};
+const Spline3DVisual = ({ onLoad, onError }) => (
+  <div className="w-full h-[400px] lg:h-[440px] xl:h-[480px]">
+    <Suspense fallback={null}>
+      <Spline
+        scene="https://prod.spline.design/kZT9hc8pv6Ztw3QJ/scene.splinecode"
+        onLoad={onLoad}
+        onError={onError}
+      />
+    </Suspense>
+  </div>
+);
+
+// Compact tech badge
+const TechBadge = ({ children, delay = 0 }) => (
+  <motion.span
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.4, delay }}
+    className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[8px] sm:text-[10px] text-neutral-400 font-mono"
+  >
+    {children}
+  </motion.span>
+);
+
+// Compact stat item
+const StatItem = ({ label, value, color, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay }}
+    className="relative group text-center"
+  >
+    <p className="sub-font text-[7px] sm:text-[8px] uppercase tracking-[0.15em] text-neutral-500 mb-0.5">{label}</p>
+    <p className={`heading-font text-xs sm:text-sm font-bold ${color}`}>{value}</p>
+  </motion.div>
+);
 
 export const Hero = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [splineLoaded, setSplineLoaded] = useState(false);
   const [splineError, setSplineError] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
-  const [showSpline, setShowSpline] = useState(false); // Controls when to start loading Spline
+  const [showSpline, setShowSpline] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    setIsLoaded(true);
-
-    // Check if device is mobile/small screen
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint
-    };
-
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    // Delay Spline loading by 3 seconds to see the circular visual first
-    const splineTimer = setTimeout(() => {
-      setShowSpline(true);
-    }, 3000); // 3 second delay before starting to load Spline
+    const splineTimer = setTimeout(() => setShowSpline(true), 3000);
+
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 15,
+        y: (e.clientY / window.innerHeight - 0.5) * 15
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(splineTimer);
     };
   }, []);
 
-  const handleSplineLoad = () => {
-    console.log('Spline loaded successfully!');
-    setSplineLoaded(true);
-  };
-
-  const handleSplineError = () => {
-    console.log('Spline failed to load');
-    setSplineError(true);
-  };
-
-  // Set your hackathon date here
   const hackathonDate = '2025-02-15T09:00:00';
 
   return (
-    <section id='register' className="relative min-h-screen flex items-center pt-24 md:pt-20 overflow-hidden bg-cyber-black max-w-full">
-      {/* Dynamic Grid / Matrix Elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-30 md:opacity-40">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-[120%] h-full bg-[radial-gradient(circle_at_center,rgba(77,0,255,0.15)_0%,transparent_70%)]"></div>
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="h-full w-full bg-[linear-gradient(90deg,rgba(0,224,255,0.05)_1px,transparent_1px),linear-gradient(rgba(0,224,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px] md:bg-[size:50px_50px]"></div>
+    <section id='register' className="relative h-screen flex items-center overflow-hidden bg-cyber-black">
+      {/* Background effects */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,224,255,0.08)_0%,transparent_50%)]"
+          style={{ transform: `translate(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.5}px)` }}
+        />
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(77,0,255,0.08)_0%,transparent_50%)]"
+          style={{ transform: `translate(${-mousePosition.x * 0.3}px, ${-mousePosition.y * 0.3}px)` }}
+        />
+        <div className="absolute inset-0 overflow-hidden opacity-15">
+          <div className="h-full w-full bg-[linear-gradient(90deg,rgba(0,224,255,0.03)_1px,transparent_1px),linear-gradient(rgba(0,224,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
         </div>
       </div>
 
       {/* Animated orbs */}
       <motion.div
-        className="absolute top-1/4 right-1/4 w-32 md:w-64 h-32 md:h-64 bg-cyan-neon/10 rounded-full blur-[60px] md:blur-[100px]"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 4, repeat: Infinity }}
+        className="absolute top-1/4 right-1/4 w-32 md:w-64 h-32 md:h-64 bg-cyan-neon/5 rounded-full blur-[60px] md:blur-[100px]"
+        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
+        transition={{ duration: 6, repeat: Infinity }}
+        style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
       />
       <motion.div
-        className="absolute bottom-1/4 left-1/4 w-32 md:w-64 h-32 md:h-64 bg-purple-electric/10 rounded-full blur-[60px] md:blur-[100px]"
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-        transition={{ duration: 4, repeat: Infinity }}
+        className="absolute bottom-1/4 left-1/4 w-32 md:w-64 h-32 md:h-64 bg-purple-electric/5 rounded-full blur-[60px] md:blur-[100px]"
+        animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.2, 0.3] }}
+        transition={{ duration: 6, repeat: Infinity }}
+        style={{ transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)` }}
       />
 
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-neon/50 to-transparent" />
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 xl:gap-12 items-center">
           {/* Left Content */}
           <div className="order-2 lg:order-1">
-            <motion.div
+            {/* Status badge */}
+            {/* <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-2.5 py-1 border border-cyan-neon/30 bg-gradient-to-r from-cyan-neon/10 to-transparent rounded-full mb-2 sm:mb-3 backdrop-blur-sm"
+            >
+              <motion.div 
+                className="w-1.5 h-1.5 bg-matrix-green rounded-full shadow-[0_0_8px_#00FF41]"
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <span className="sub-font text-cyan-neon text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.2em]">
+                REGISTRATION_OPEN
+              </span>
+            </motion.div> */}
+
+            {/* Main heading */}
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1 border border-cyan-neon/30 bg-cyan-neon/5 mb-4 sm:mb-6"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="heading-font text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-[0.9] tracking-tighter mb-2 sm:mb-3"
             >
-              <div className="w-2 h-2 bg-matrix-green animate-pulse rounded-full shadow-[0_0_8px_#00FF41]"></div>
-              <span className="sub-font text-cyan-neon text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em]">SYSTEM_STATUS: ACTIVE</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="heading-font text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-4 sm:mb-6"
-            >
-              <GlitchText text="HACK" className="glitch" intensity="medium" /> <br />
-              <span className="gradient-text-animated">
+              <div className="relative inline-block">
+                <GlitchText text="HACK" className="glitch" intensity="medium" />
+                <motion.div
+                  className="absolute -bottom-0.5 left-0 h-0.5 bg-gradient-to-r from-cyan-neon to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                />
+              </div>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-neon via-purple-electric to-matrix-green">
                 <GlitchText text="GEAR 2.0" intensity="high" />
               </span>
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="sub-font text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-400 mb-6 sm:mb-8 font-medium leading-tight"
-            >
-              DECRYPT THE FUTURE. A HIGH-OCTANE 8H SPRINT FOR THE NEXT GENERATION OF <span className="text-white border-b border-matrix-green">ARCHITECTS</span>.
-            </motion.p>
-
-            {/* Countdown Timer */}
+            {/* Tagline */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mb-6 sm:mb-8"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-3 sm:mb-4"
             >
-              <p className="sub-font text-[10px] sm:text-xs text-neutral-500 uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-4">
-                COUNTDOWN TO LAUNCH
+              <p className="sub-font text-sm sm:text-base md:text-lg text-neutral-400 mb-2 font-medium leading-snug">
+                A HIGH-OCTANE <span className="text-cyan-neon">8-HOUR SPRINT</span> FOR THE NEXT GENERATION OF{' '}
+                <span className="text-white">ARCHITECTS</span>
               </p>
-              <Countdown targetDate={hackathonDate} />
-            </motion.div>
-
-            {/* Info Grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8 border-l-2 border-cyan-neon pl-3 sm:pl-6"
-            >
-              <div>
-                <p className="sub-font text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-neutral-500 mb-1">TIMESTAMP</p>
-                <p className="heading-font text-sm sm:text-base md:text-lg font-bold neon-text-cyan">TBA</p>
-              </div>
-              <div>
-                <p className="sub-font text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-neutral-500 mb-1">LOCATION</p>
-                <p className="heading-font text-sm sm:text-base md:text-lg font-bold neon-text-purple">TBA</p>
-              </div>
-              <div>
-                <p className="sub-font text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-neutral-500 mb-1">SLOTS</p>
-                <p className="heading-font text-sm sm:text-base md:text-lg font-bold neon-text-green">TBA</p>
+              
+              {/* Tech tags */}
+              <div className="flex flex-wrap gap-1.5">
+                <TechBadge delay={0.3}><span className="text-cyan-neon">●</span> AI/ML</TechBadge>
+                <TechBadge delay={0.35}><span className="text-purple-electric">●</span> WEB3</TechBadge>
+                <TechBadge delay={0.4}><span className="text-matrix-green">●</span> CLOUD</TechBadge>
+                <TechBadge delay={0.45}><span className="text-yellow-400">●</span> IOT</TechBadge>
               </div>
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* Countdown Timer - Compact */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              id="register"
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mb-3 sm:mb-4 p-3 sm:p-4 border border-neutral-800/50 bg-black/40 backdrop-blur-sm rounded-lg relative overflow-hidden"
+            >
+              {/* Corner accents */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-neon/50" />
+              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-purple-electric/50" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-matrix-green/50" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-neon/50" />
+              
+              <div className="flex items-center gap-1.5 mb-2">
+                <motion.div
+                  className="w-1.5 h-1.5 bg-cyan-neon rounded-full"
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                />
+                <p className="sub-font text-[8px] sm:text-[9px] text-cyan-neon uppercase tracking-[0.2em] font-bold">
+                  COUNTDOWN_TO_LAUNCH
+                </p>
+              </div>
+              <Countdown targetDate={hackathonDate} compact />
+            </motion.div>
+
+            {/* Info Grid - Compact */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="grid grid-cols-3 gap-3 mb-3 sm:mb-4 p-2.5 border-l-2 border-cyan-neon bg-gradient-to-r from-cyan-neon/5 to-transparent rounded-r-md"
+            >
+              <StatItem label="DATE" value="TBA" color="text-cyan-neon" delay={0.45} />
+              <StatItem label="VENUE" value="TBA" color="text-purple-electric" delay={0.5} />
+              <StatItem label="SLOTS" value="TBA" color="text-matrix-green" delay={0.55} />
+            </motion.div>
+
+            {/* CTA Buttons - Compact */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-2 sm:gap-3"
             >
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 bg-cyan-neon text-black heading-font text-sm sm:text-base font-black uppercase tracking-widest transition-all hover:shadow-[0_0_40px_rgba(0,224,255,0.6)] relative overflow-hidden"
+                whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(0,224,255,0.4)' }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-neon to-cyan-neon/80 text-black heading-font text-xs sm:text-sm font-black uppercase tracking-wider overflow-hidden rounded"
               >
-                <span className="relative z-10">JOIN NETWORK</span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
+                  animate={{ x: ['0%', '200%'] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                />
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span>JOIN NETWORK</span>
+                  <motion.svg 
+                    className="w-3.5 h-3.5" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </motion.svg>
+                </span>
               </motion.button>
+              
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 border border-purple-electric text-white heading-font text-sm sm:text-base font-bold uppercase tracking-widest transition-all hover:bg-purple-electric/10 hover:shadow-[0_0_30px_rgba(77,0,255,0.3)]"
+                whileHover={{ scale: 1.02, borderColor: '#4D00FF', boxShadow: '0 0 20px rgba(77,0,255,0.3)' }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative w-full sm:w-auto px-6 py-3 border border-purple-electric/50 text-white heading-font text-xs sm:text-sm font-bold uppercase tracking-wider overflow-hidden rounded bg-purple-electric/5 backdrop-blur-sm"
               >
-                DATA_STREAM
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>VIEW DETAILS</span>
+                </span>
               </motion.button>
+            </motion.div>
+
+            {/* Social proof - Compact */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="mt-3 sm:mt-4 flex items-center gap-3 text-neutral-500"
+            >
+              <div className="flex -space-x-1.5">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-6 h-6 rounded-full border-2 border-black bg-gradient-to-br from-cyan-neon/20 to-purple-electric/20 flex items-center justify-center"
+                  >
+                    <span className="text-[8px] text-white/60">👤</span>
+                  </div>
+                ))}
+              </div>
+              <div className="sub-font text-[10px] sm:text-xs">
+                <span className="text-cyan-neon font-bold">00</span> already registered
+              </div>
             </motion.div>
           </div>
 
-          {/* Right Side - Cyberpunk Visual / Spline 3D */}
+          {/* Right Side - Visual */}
           <motion.div
-            className="order-1 lg:order-2 flex items-center justify-center relative min-h-[350px] sm:min-h-[400px] lg:min-h-[500px]"
-            initial={{ opacity: 0, scale: 0.8 }}
+            className="order-1 lg:order-2 flex items-center justify-center relative"
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ transform: `translate(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.1}px)` }}
           >
-            {/* Mobile: Always show circular visual */}
             {isMobile && <CircularVisual />}
 
-            {/* Desktop: Show circular until Spline loads, then show Spline */}
             {!isMobile && (
               <>
-                {/* Circular visual - show while loading or on error */}
                 {(!splineLoaded || splineError) && (
                   <motion.div
                     initial={{ opacity: 1 }}
@@ -294,7 +463,6 @@ export const Hero = () => {
                   </motion.div>
                 )}
 
-                {/* Spline 3D - load in background, show when ready */}
                 {showSpline && !splineError && (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -303,27 +471,40 @@ export const Hero = () => {
                     className={`w-full ${!splineLoaded ? 'absolute opacity-0' : ''}`}
                   >
                     <Spline3DVisual
-                      onLoad={handleSplineLoad}
-                      onError={handleSplineError}
+                      onLoad={() => setSplineLoaded(true)}
+                      onError={() => setSplineError(true)}
                     />
                   </motion.div>
                 )}
               </>
             )}
           </motion.div>
-
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator - Compact */}
       <motion.div
-        className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.6 }}
+        transition={{ delay: 1 }}
       >
-        <span className="sub-font text-xs text-neutral-500 tracking-widest">SCROLL</span>
-        <div className="w-px h-8 bg-gradient-to-b from-cyan-neon to-transparent"></div>
+        <motion.div
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <div className="w-4 h-6 border border-neutral-700 rounded-full flex justify-center pt-1">
+            <motion.div
+              className="w-0.5 h-1.5 bg-cyan-neon rounded-full"
+              animate={{ y: [0, 4, 0], opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
       </motion.div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-electric/30 to-transparent" />
     </section>
   );
 };
