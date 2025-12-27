@@ -23,11 +23,11 @@ const inter = Inter({
 // ============================================
 // SEO CONFIGURATION - Update these values
 // ============================================
-const SITE_URL = "https://hackgear2.vercel.app"; // Change to your actual domain
+const SITE_URL = "https://hackgear2-0.vercel.app"; // Change to your actual domain
 const SITE_NAME = "HackGear 2.0";
 const SITE_DESCRIPTION = "HackGear 2.0 - Aligarh's premier 8-hour offline hackathon for beginners at Vision Institute of Technology. Join the coding revolution with prizes, expert mentorship & networking opportunities.";
 const SITE_KEYWORDS = "hackathon Aligarh, HackGear 2.0, coding competition, tech hackathon Aligarh, programming competition, VIT Aligarh hackathon, beginner hackathon, 8 hour hackathon, NovaCoders, tech event UP";
-const OG_IMAGE = "/og-image.png"; // Add this image to /public folder (1200x630px recommended)
+const OG_IMAGE = "/hackgear.png"; // Add this image to /public folder (1200x630px recommended)
 const TWITTER_HANDLE = "@hackgear"; // Your Twitter handle
 const GOOGLE_VERIFICATION = ""; // Add your Google Search Console verification code
 // ============================================
