@@ -110,7 +110,7 @@ export const ThemeToggle = () => {
   const { theme, setTheme, themes, themeOrder, currentTheme } = context;
 
   return (
-    <div className="fixed bottom-4 right-16 z-50">
+    <div className="fixed bottom-4 right-30 z-50">
       {/* Theme selector popup */}
       <AnimatePresence>
         {isOpen && (
