@@ -5,11 +5,11 @@ import { TiltCard } from './TiltCard';
 
 const timelineSteps = [
   { 
-    date: 'TBA', 
+    date: '3 Jan 2026', 
     title: 'Announced', 
     desc: 'Announcement of the hackathon.',
     details: 'Official announcement across all channels. Registration portal opens. Early bird benefits available.',
-    status: 'Not Started Yet',
+    status: 'Registration Started',
     icon: '📢'
   },
   { 
