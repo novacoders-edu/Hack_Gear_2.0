@@ -81,8 +81,9 @@ export const Navbar = () => {
             </a>
           ))}
           <a
-            href="#register"
-            onClick={(e) => handleSmoothScroll(e, '#register')}
+            href="https://unstop.com/p/hack-gear-20-national-level-hackathon-by-nova-coders-nova-coders-1612261?lb=gAsqeJDc&utm_medium=Share&utm_source=gaurakum1185&utm_campaign=Online_coding_challenge"
+            // onClick={(e) => handleSmoothScroll(e, '#register')}
+            target='_blank'
             className="px-4 xl:px-6 py-2 border border-cyan-neon text-cyan-neon text-xs heading-font font-bold uppercase tracking-widest relative group overflow-hidden flex-shrink-0"
           >
             <span className="absolute inset-0 bg-cyan-neon translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
@@ -132,8 +133,9 @@ export const Navbar = () => {
             </a>
           ))}
           <a
-            href="#register"
-            onClick={(e) => handleSmoothScroll(e, "#register")}
+            href="https://unstop.com/p/hack-gear-20-national-level-hackathon-by-nova-coders-nova-coders-1612261?lb=gAsqeJDc&utm_medium=Share&utm_source=gaurakum1185&utm_campaign=Online_coding_challenge"
+            target='_blank'
+            // onClick={(e) => handleSmoothScroll(e, "#register")}
             className="w-full py-4 sm:py-5 border border-cyan-neon text-cyan-neon text-center heading-font font-bold uppercase tracking-widest bg-cyan-neon/10 text-lg"
             style={{
               transitionDelay: isMenuOpen ? `${navLinks.length * 50}ms` : '0ms',
