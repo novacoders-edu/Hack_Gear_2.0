@@ -163,12 +163,12 @@ export const LoadingPage = ({ onComplete }) => {
             key={particle.id}
             className="absolute w-[2px] h-[2px] bg-cyan-neon rounded-full"
             initial={{
-              x: particle.initialX,
-              y: particle.initialY,
+              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1920,
+              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1080,
             }}
             animate={{
-              x: particle.targetX,
-              y: particle.targetY,
+              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1920,
+              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1080,
             }}
             transition={{
               duration: particle.duration,
