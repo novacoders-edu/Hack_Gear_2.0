@@ -12,7 +12,7 @@ const CircularVisual = () => (
   <div className="relative w-full max-w-[200px] sm:max-w-[250px] lg:max-w-[280px] xl:max-w-[320px] aspect-square mx-auto">
     {/* Ambient glow */}
     <div className="absolute inset-0 bg-gradient-radial from-cyan-neon/20 via-transparent to-transparent blur-2xl" />
-    
+
     {/* Outer rotating ring */}
     <motion.div
       className="absolute inset-0 border border-cyan-neon/20 rounded-full"
@@ -122,7 +122,7 @@ const CircularVisual = () => (
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
       <div className="flex items-center gap-1.5">
-        <motion.div 
+        <motion.div
           className="w-1 h-1 bg-matrix-green rounded-full"
           animate={{ scale: [1, 1.5, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
@@ -138,7 +138,7 @@ const CircularVisual = () => (
       transition={{ duration: 4, repeat: Infinity, delay: 0.5, ease: "easeInOut" }}
     >
       <div className="flex items-center gap-1.5">
-        <motion.div 
+        <motion.div
           className="w-1 h-1 bg-purple-electric rounded-full"
           animate={{ scale: [1, 1.5, 1] }}
           transition={{ duration: 1, repeat: Infinity, delay: 0.3 }}
@@ -154,7 +154,7 @@ const CircularVisual = () => (
       transition={{ duration: 4, repeat: Infinity, delay: 1, ease: "easeInOut" }}
     >
       <div className="flex items-center gap-1.5">
-        <motion.div 
+        <motion.div
           className="w-1 h-1 bg-cyan-neon rounded-full"
           animate={{ scale: [1, 1.5, 1] }}
           transition={{ duration: 1, repeat: Infinity, delay: 0.6 }}
@@ -233,17 +233,36 @@ export const Hero = () => {
     };
   }, []);
 
+  const handleSmoothScroll = (e, href) => {
+    e.preventDefault();
+    // closeMenu();
+
+    const targetId = href.replace('#', '');
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      const navHeight = 100;
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+  const registrationLink = "https://unstop.com/p/hack-gear-20-national-level-hackathon-by-nova-coders-nova-coders-1612261?lb=gAsqeJDc&utm_medium=Share&utm_source=gaurakum1185&utm_campaign=Online_coding_challenge";
   const hackathonDate = '2025-02-15T09:00:00';
+  const registrationDeadline = '2026-02-28T23:59:59';
 
   return (
     <section id='register' className="relative h-screen flex items-center overflow-hidden bg-cyber-black">
       {/* Background effects */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,224,255,0.08)_0%,transparent_50%)]"
           style={{ transform: `translate(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.5}px)` }}
         />
-        <div 
+        <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(77,0,255,0.08)_0%,transparent_50%)]"
           style={{ transform: `translate(${-mousePosition.x * 0.3}px, ${-mousePosition.y * 0.3}px)` }}
         />
@@ -323,13 +342,14 @@ export const Hero = () => {
                 A HIGH-OCTANE <span className="text-cyan-neon">8-HOUR SPRINT</span> FOR THE NEXT GENERATION OF{' '}
                 <span className="text-white">ARCHITECTS</span>
               </p>
-              
+
               {/* Tech tags */}
               <div className="flex flex-wrap gap-1.5">
                 <TechBadge delay={0.3}><span className="text-cyan-neon">●</span> AI/ML</TechBadge>
-                <TechBadge delay={0.35}><span className="text-purple-electric">●</span> WEB3</TechBadge>
-                <TechBadge delay={0.4}><span className="text-matrix-green">●</span> CLOUD</TechBadge>
-                <TechBadge delay={0.45}><span className="text-yellow-400">●</span> IOT</TechBadge>
+                <TechBadge delay={0.35}><span className="text-purple-electric">●</span> WEB</TechBadge>
+                <TechBadge delay={0.4}><span className="text-matrix-green">●</span> CYBER</TechBadge>
+                <TechBadge delay={0.45}><span className="text-yellow-400">●</span> BLOCKCHAIN</TechBadge>
+                <TechBadge delay={0.45}><span className="text-green-400">●</span> OPEN INNOVATION</TechBadge>
               </div>
             </motion.div>
 
@@ -338,25 +358,50 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="mb-3 sm:mb-4 p-3 sm:p-4 border border-neutral-800/50 bg-black/40 backdrop-blur-sm rounded-lg relative overflow-hidden"
+              className="mb-4 sm:mb-5 p-4 sm:p-5 md:p-6 border-2 border-neutral-800/50 bg-black/40 backdrop-blur-sm rounded-xl relative overflow-hidden shadow-[0_0_30px_rgba(0,224,255,0.15)]"
             >
-              {/* Corner accents */}
-              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-neon/50" />
-              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-purple-electric/50" />
-              <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-matrix-green/50" />
-              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-neon/50" />
-              
-              <div className="flex items-center gap-1.5 mb-2">
+              {/* Animated background pulse */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-cyan-neon/10 via-purple-electric/10 to-cyan-neon/10"
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+
+              {/* Corner accents - Bigger */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-neon" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-electric" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-matrix-green" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-neon" />
+
+              <div className="flex items-center justify-center gap-2 mb-3 relative z-10">
                 <motion.div
-                  className="w-1.5 h-1.5 bg-cyan-neon rounded-full"
-                  animate={{ opacity: [1, 0.3, 1] }}
+                  className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
+                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
                 />
-                <p className="sub-font text-[8px] sm:text-[9px] text-cyan-neon uppercase tracking-[0.2em] font-bold">
-                  COUNTDOWN_TO_LAUNCH
+                <p className="sub-font text-xs sm:text-sm md:text-base text-cyan-neon uppercase tracking-[0.2em] font-black">
+                  REGISTRATION CLOSES IN
                 </p>
+                <motion.div
+                  className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
+                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+                />
               </div>
-              <Countdown targetDate={hackathonDate} compact />
+              <div className="relative z-10">
+                <Countdown targetDate={registrationDeadline} compact />
+              </div>
+              {/* Urgency indicator */}
+              <motion.div
+                className="mt-3 text-center relative z-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="sub-font text-[10px] sm:text-xs text-purple-electric/80 uppercase tracking-wider font-bold">
+                  ⚡ Limited Spots Available
+                </p>
+              </motion.div>
             </motion.div>
 
             {/* Info Grid - Compact */}
@@ -367,7 +412,7 @@ export const Hero = () => {
               className="grid grid-cols-3 gap-3 mb-3 sm:mb-4 p-2.5 border-l-2 border-cyan-neon bg-gradient-to-r from-cyan-neon/5 to-transparent rounded-r-md"
             >
               <StatItem label="DATE" value="TBA" color="text-cyan-neon" delay={0.45} />
-              <StatItem label="VENUE" value="TBA" color="text-purple-electric" delay={0.5} />
+              <StatItem label="VENUE" value="VIT Campus" color="text-purple-electric" delay={0.5} />
               <StatItem label="SLOTS" value="TBA" color="text-matrix-green" delay={0.55} />
             </motion.div>
 
@@ -382,6 +427,7 @@ export const Hero = () => {
                 whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(0,224,255,0.4)' }}
                 whileTap={{ scale: 0.98 }}
                 className="group relative w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-neon to-cyan-neon/80 text-black heading-font text-xs sm:text-sm font-black uppercase tracking-wider overflow-hidden rounded"
+                onClick={()=>window.open(registrationLink,'_blank')}
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
@@ -390,10 +436,10 @@ export const Hero = () => {
                 />
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <span>JOIN NETWORK</span>
-                  <motion.svg 
-                    className="w-3.5 h-3.5" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
+                  <motion.svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor"
                     animate={{ x: [0, 3, 0] }}
                     transition={{ duration: 1, repeat: Infinity }}
@@ -402,11 +448,12 @@ export const Hero = () => {
                   </motion.svg>
                 </span>
               </motion.button>
-              
+
               <motion.button
                 whileHover={{ scale: 1.02, borderColor: '#4D00FF', boxShadow: '0 0 20px rgba(77,0,255,0.3)' }}
                 whileTap={{ scale: 0.98 }}
                 className="group relative w-full sm:w-auto px-6 py-3 border border-purple-electric/50 text-white heading-font text-xs sm:text-sm font-bold uppercase tracking-wider overflow-hidden rounded bg-purple-electric/5 backdrop-blur-sm"
+                onClick={(e) => handleSmoothScroll(e, '#protocol')}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -435,7 +482,7 @@ export const Hero = () => {
                 ))}
               </div>
               <div className="sub-font text-[10px] sm:text-xs">
-                <span className="text-cyan-neon font-bold">00</span> already registered
+                <span className="text-cyan-neon font-bold">09</span> already registered
               </div>
             </motion.div>
           </div>
