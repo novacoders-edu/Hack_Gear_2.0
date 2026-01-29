@@ -48,7 +48,7 @@ export const About = () => {
   }, []);
 
   const animateNumbers = () => {
-    const targets = { nodes: 50, agents: 25, bounty: 25000 };
+    const targets = { nodes: 50, agents: 10 , bounty: 25000 };
     const duration = 2000;
     const steps = 60;
     const stepDuration = duration / steps;
@@ -73,16 +73,16 @@ export const About = () => {
   };
 
   const stats = [
-    {
-      val: animatedValues.nodes,
-      suffix: '+',
-      label: 'NODES_LIVE',
-      color: 'text-cyan-neon',
-      description: 'Active neural connections across global clusters',
-      icon: '⚡',
-      gradient: 'from-cyan-neon/20 to-blue-500/20',
-      pulse: true
-    },
+    // {
+    //   val: animatedValues.nodes,
+    //   suffix: '+',
+    //   label: 'NODES_LIVE',
+    //   color: 'text-cyan-neon',
+    //   description: 'Active neural connections across global clusters',
+    //   icon: '⚡',
+    //   gradient: 'from-cyan-neon/20 to-blue-500/20',
+    //   pulse: true
+    // },
     {
       val: '8H',
       label: 'HACK_DURATION',
