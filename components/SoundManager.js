@@ -24,18 +24,18 @@ const MUSIC_TRACKS = {
     color: "#00E0FF",
   },
   green: {
-    name: "Dark Tech",
-    url: "/music/dark_tech.mp3",
+    name: "CryptoStasis",
+    url: "/music/crypto-stasis.mp3",
     color: "#00FF41",
   },
   red: {
-    name: "OG I",
-    url: "/music/vikram_another.mp3",
+    name: "Vikram Title",
+    url: "/music/vikram_title.mp3",
     color: "#FF0040",
   },
   gold: {
-    name: "Pirates",
-    url: "/music/jack_sparrow.mp3",
+    name: "Jack Sparrow BGM",
+    url: "/music/jack_sparrow_bgm.mp3",
     color: "#FFD700",
   },
 };
@@ -51,7 +51,7 @@ const MUSIC_LOOP = true;
 // ============================================
 const SCROLL_TRACK = {
   name: "End Track",
-  url: "/music/professor_phone.mp3", // <-- change to your end music file if needed
+  url: "/music/el_professor_phone.mp3", // <-- change to your end music file if needed
   color: "#ff0000",
 };
 
@@ -289,6 +289,51 @@ export const SoundProvider = ({ children }) => {
     }
   }, [fadeTo, isAtBottom, isClient, isMuted]);
 
+    const setPlaysInline = useCallback((audioEl) => {
+    if (!audioEl) return;
+    // iOS Safari helpers
+    try {
+      audioEl.playsInline = true;
+      audioEl.setAttribute?.("playsinline", "");
+      audioEl.setAttribute?.("webkit-playsinline", "");
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const unlockAudioElement = useCallback(async (audioEl) => {
+    // Must be called inside a real user gesture (tap/click/keydown) to “unlock” iOS.
+    if (!audioEl) return false;
+
+    try {
+      setPlaysInline(audioEl);
+
+      const prevMuted = audioEl.muted;
+      const prevVol = audioEl.volume;
+
+      audioEl.muted = true;
+      audioEl.volume = 0;
+
+      // play -> pause primes the element for later programmatic play()
+      const p = audioEl.play();
+      if (p && typeof p.then === "function") await p;
+
+      audioEl.pause();
+      try {
+        audioEl.currentTime = 0;
+      } catch {
+        // ignore
+      }
+
+      audioEl.muted = prevMuted;
+      audioEl.volume = prevVol;
+
+      return true;
+    } catch {
+      return false;
+    }
+  }, [setPlaysInline]);
+
   // Load saved preferences + init scroll-music element
   useEffect(() => {
     setIsClient(true);
@@ -303,6 +348,7 @@ export const SoundProvider = ({ children }) => {
 
     // Init end-of-page music element
     const scrollAudio = new Audio();
+    setPlaysInline(scrollAudio);
     scrollAudio.src = SCROLL_TRACK.url;
     scrollAudio.loop = true;
     scrollAudio.volume = 0;
@@ -320,7 +366,7 @@ export const SoundProvider = ({ children }) => {
         scrollMusicRef.current = null;
       }
     };
-  }, [safePauseReset]);
+  }, [safePauseReset, setPlaysInline]);
 
   // Scroll detection (is user at bottom)
   useEffect(() => {
@@ -375,70 +421,130 @@ export const SoundProvider = ({ children }) => {
     scrollMusicPlaying,
   ]);
 
-  // Initialize background music when track changes
+  // Initialize / switch background music when track changes (crossfade, mobile-friendly)
   useEffect(() => {
     if (!isClient) return;
 
     const track = MUSIC_TRACKS[currentTrack] || MUSIC_TRACKS.cyan;
+    const prevAudio = bgMusicRef.current;
 
-    // Cleanup old bg
-    if (bgMusicRef.current) {
-      safePauseReset(bgMusicRef.current);
-      bgMusicRef.current = null;
-    }
     stopGeneratedAmbient();
 
-    const audio = new Audio();
-    audio.src = track.url;
-    audio.loop = MUSIC_LOOP;
-    audio.volume = MUSIC_VOLUME;
-    audio.preload = "auto";
+    const nextAudio = new Audio();
+    setPlaysInline(nextAudio);
+    nextAudio.src = track.url;
+    nextAudio.loop = MUSIC_LOOP;
+    nextAudio.volume = 0; // start silent, fade in when playing
+    nextAudio.preload = "auto";
 
-    const onCanPlay = () => {
+    let didSwap = false;
+
+    const cleanupPrev = () => {
+      if (!prevAudio) return;
+      // fade out old track, then stop it
+      fadeTo(prevAudio, 0, 0.02, 30, () => {
+        safePauseReset(prevAudio);
+        try {
+          prevAudio.src = "";
+        } catch {
+          // ignore
+        }
+      });
+    };
+
+    const onReady = async () => {
       setMusicLoaded(true);
-      // Best-effort autoplay (only if not at bottom)
-      attemptPlayBackground();
+
+      // Swap ref only when new audio is ready (prevents silence on slow mobile loads)
+      bgMusicRef.current = nextAudio;
+      didSwap = true;
+
+      // If we shouldn't play right now, just stop the old one and keep the new paused
+      if (isMuted || isAtBottom) {
+        cleanupPrev();
+        return;
+      }
+
+      try {
+        nextAudio.muted = false;
+        const p = nextAudio.play();
+        if (p && typeof p.then === "function") await p;
+
+        setAutoplayBlocked(false);
+
+        // crossfade: fade in new, fade out old
+        fadeTo(nextAudio, MUSIC_VOLUME, 0.01, 50);
+        cleanupPrev();
+      } catch {
+        setAutoplayBlocked(true);
+        // keep prev playing if new couldn't start
+      }
     };
 
     const onError = () => {
       setMusicLoaded(false);
+      // If loading fails, keep old (if any) and fallback
       startGeneratedAmbient();
     };
 
-    audio.addEventListener("canplay", onCanPlay);
-    audio.addEventListener("canplaythrough", onCanPlay);
-    audio.addEventListener("error", onError);
+    nextAudio.addEventListener("canplay", onReady);
+    nextAudio.addEventListener("canplaythrough", onReady);
+    nextAudio.addEventListener("error", onError);
 
-    bgMusicRef.current = audio;
+    // Trigger load on some browsers
+    try {
+      nextAudio.load?.();
+    } catch {
+      // ignore
+    }
+
+    // If there was no previous audio, set ref immediately (so other logic can see it)
+    if (!prevAudio) {
+      bgMusicRef.current = nextAudio;
+      didSwap = true;
+    }
 
     return () => {
-      audio.removeEventListener("canplay", onCanPlay);
-      audio.removeEventListener("canplaythrough", onCanPlay);
-      audio.removeEventListener("error", onError);
-      safePauseReset(audio);
+      nextAudio.removeEventListener("canplay", onReady);
+      nextAudio.removeEventListener("canplaythrough", onReady);
+      nextAudio.removeEventListener("error", onError);
+
+      // If this effect is being replaced and we never swapped in, just stop this audio.
+      if (!didSwap) {
+        safePauseReset(nextAudio);
+      }
     };
   }, [
-    attemptPlayBackground,
     currentTrack,
+    fadeTo,
+    isAtBottom,
     isClient,
+    isMuted,
     safePauseReset,
+    setPlaysInline,
     startGeneratedAmbient,
     stopGeneratedAmbient,
   ]);
 
   // Invisible “first interaction” hook:
   // - resumes AudioContext (SFX)
+  // - unlocks <audio> elements for iOS
   // - retries autoplay if it was blocked
   useEffect(() => {
     if (!isClient || hasUserInteracted) return;
 
-    const onFirstInteraction = () => {
+    const onFirstInteraction = async () => {
+      // Only real “gesture” events should land here (see events list below).
       setHasUserInteracted(true);
 
       const ctx = getAudioContext();
       if (ctx && ctx.state === "suspended") {
         ctx.resume().catch(() => {});
       }
+
+      // Prime/unlock audio elements (critical for iOS + “play on scroll” later)
+      await unlockAudioElement(bgMusicRef.current);
+      await unlockAudioElement(scrollMusicRef.current);
 
       // Retry whichever is relevant now
       if (autoplayBlocked) {
@@ -452,8 +558,10 @@ export const SoundProvider = ({ children }) => {
       }
     };
 
-    // Added wheel/scroll so “reaching bottom” can unlock audio in more cases
-    const events = ["pointerdown", "keydown", "touchstart", "mousedown", "wheel", "scroll"];
+    // IMPORTANT: do NOT include "scroll"/"wheel" here.
+    // On mobile those often do NOT unlock media, but they WOULD set hasUserInteracted=true,
+    // preventing later real taps from unlocking audio.
+    const events = ["pointerdown", "touchstart", "keydown", "mousedown"];
     events.forEach((ev) =>
       document.addEventListener(ev, onFirstInteraction, { once: true, passive: true })
     );
@@ -469,6 +577,7 @@ export const SoundProvider = ({ children }) => {
     hasUserInteracted,
     isAtBottom,
     isClient,
+    unlockAudioElement,
   ]);
 
   // Start/stop music based on mute state

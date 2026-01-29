@@ -110,7 +110,7 @@ export const ThemeToggle = () => {
   const { theme, setTheme, themes, themeOrder, currentTheme } = context;
 
   return (
-    <div className="fixed bottom-4 right-30 z-50">
+    <div className="fixed bottom-4 left-4 z-50">
       {/* Theme selector popup */}
       <AnimatePresence>
         {isOpen && (
@@ -118,7 +118,7 @@ export const ThemeToggle = () => {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-14 right-0 p-3 bg-black/95 border border-neutral-700 rounded-lg shadow-xl min-w-[160px]"
+            className="absolute bottom-14 right-0 left-1 p-3 bg-black/95 border border-neutral-700 rounded-lg shadow-xl min-w-[160px]"
           >
             <p className="sub-font text-[10px] text-neutral-500 uppercase tracking-widest mb-2 px-1">
               Select Theme
