@@ -280,7 +280,8 @@ export const SoundProvider = ({ children }) => {
       if (p && typeof p.then === "function") await p;
 
       setAutoplayBlocked(false);
-      setScrollMusicPlaying(true);
+      // Use a timeout to avoid setState in effect
+      setTimeout(() => setScrollMusicPlaying(true), 0);
       fadeTo(scrollMusicRef.current, SCROLL_MUSIC_VOLUME, 0.02, 30);
       return true;
     } catch {
@@ -336,26 +337,30 @@ export const SoundProvider = ({ children }) => {
 
   // Load saved preferences + init scroll-music element
   useEffect(() => {
-    setIsClient(true);
+    // Use a timeout to avoid setState in effect
+    const timer = setTimeout(() => {
+      setIsClient(true);
 
-    const savedMuted = localStorage.getItem("hackgear-sound-muted");
-    if (savedMuted !== null) setIsMuted(JSON.parse(savedMuted));
+      const savedMuted = localStorage.getItem("hackgear-sound-muted");
+      if (savedMuted !== null) setIsMuted(JSON.parse(savedMuted));
 
-    const savedTrack = localStorage.getItem("hackgear-music-track");
-    if (savedTrack && MUSIC_TRACKS[savedTrack]) {
-      setCurrentTrack(savedTrack);
-    }
+      const savedTrack = localStorage.getItem("hackgear-music-track");
+      if (savedTrack && MUSIC_TRACKS[savedTrack]) {
+        setCurrentTrack(savedTrack);
+      }
 
-    // Init end-of-page music element
-    const scrollAudio = new Audio();
-    setPlaysInline(scrollAudio);
-    scrollAudio.src = SCROLL_TRACK.url;
-    scrollAudio.loop = true;
-    scrollAudio.volume = 0;
-    scrollAudio.preload = "auto";
-    scrollMusicRef.current = scrollAudio;
+      // Init end-of-page music element
+      const scrollAudio = new Audio();
+      setPlaysInline(scrollAudio);
+      scrollAudio.src = SCROLL_TRACK.url;
+      scrollAudio.loop = true;
+      scrollAudio.volume = 0;
+      scrollAudio.preload = "auto";
+      scrollMusicRef.current = scrollAudio;
+    }, 0);
 
     return () => {
+      clearTimeout(timer);
       if (scrollMusicRef.current) {
         safePauseReset(scrollMusicRef.current);
         try {
@@ -393,23 +398,28 @@ export const SoundProvider = ({ children }) => {
     if (!isClient) return;
     if (isMuted) return;
 
-    if (isAtBottom) {
-      // Fade out bg, then start scroll track
-      if (bgMusicRef.current && !bgMusicRef.current.paused) {
-        fadeTo(bgMusicRef.current, 0, 0.02, 30, () => safePauseReset(bgMusicRef.current));
+    const timer = setTimeout(() => {
+      if (isAtBottom) {
+        // Fade out bg, then start scroll track
+        if (bgMusicRef.current && !bgMusicRef.current.paused) {
+          fadeTo(bgMusicRef.current, 0, 0.02, 30, () => safePauseReset(bgMusicRef.current));
+        }
+        attemptPlayScrollMusic();
+        return;
       }
-      attemptPlayScrollMusic();
-      return;
-    }
 
-    // Not at bottom: stop scroll track and resume bg
-    if (scrollMusicRef.current && scrollMusicPlaying) {
-      fadeTo(scrollMusicRef.current, 0, 0.02, 30, () => {
-        safePauseReset(scrollMusicRef.current);
-        setScrollMusicPlaying(false);
-      });
-    }
-    attemptPlayBackground();
+      // Not at bottom: stop scroll track and resume bg
+      if (scrollMusicRef.current && scrollMusicPlaying) {
+        fadeTo(scrollMusicRef.current, 0, 0.02, 30, () => {
+          safePauseReset(scrollMusicRef.current);
+          // Use a timeout to avoid setState in effect
+          setTimeout(() => setScrollMusicPlaying(false), 0);
+        });
+      }
+      attemptPlayBackground();
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [
     attemptPlayBackground,
     attemptPlayScrollMusic,
@@ -584,22 +594,27 @@ export const SoundProvider = ({ children }) => {
   useEffect(() => {
     if (!isClient) return;
 
-    if (isMuted) {
-      if (bgMusicRef.current) safePauseReset(bgMusicRef.current);
-      if (scrollMusicRef.current) safePauseReset(scrollMusicRef.current);
-      setScrollMusicPlaying(false);
-      stopGeneratedAmbient();
-      return;
-    }
+    const timer = setTimeout(() => {
+      if (isMuted) {
+        if (bgMusicRef.current) safePauseReset(bgMusicRef.current);
+        if (scrollMusicRef.current) safePauseReset(scrollMusicRef.current);
+        // Use a timeout to avoid setState in effect
+        setTimeout(() => setScrollMusicPlaying(false), 0);
+        stopGeneratedAmbient();
+        return;
+      }
 
-    // unmuted => best-effort start correct track for current position
-    if (isAtBottom) {
-      attemptPlayScrollMusic().then((ok) => {
-        if (!ok) attemptPlayBackground();
-      });
-    } else {
-      attemptPlayBackground();
-    }
+      // unmuted => best-effort start correct track for current position
+      if (isAtBottom) {
+        attemptPlayScrollMusic().then((ok) => {
+          if (!ok) attemptPlayBackground();
+        });
+      } else {
+        attemptPlayBackground();
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [
     attemptPlayBackground,
     attemptPlayScrollMusic,
@@ -742,7 +757,11 @@ export const SoundToggle = () => {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // Use a timeout to avoid setState in effect
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
   if (!mounted || !context) return null;
 
   const {

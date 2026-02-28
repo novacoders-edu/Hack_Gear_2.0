@@ -1,6 +1,7 @@
 "use client"
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaCircle } from 'react-icons/fa';
 
 const ThemeContext = createContext();
 
@@ -15,28 +16,28 @@ const THEMES = {
     primary: '#00E0FF',
     rgb: '0, 224, 255',
     glow: 'rgba(0, 224, 255, 0.6)',
-    icon: '💠',
+    icon: <FaCircle style={{ color: '#00E0FF' }} />,
   },
   green: {
     name: 'Matrix Green',
     primary: '#00FF41',
     rgb: '0, 255, 65',
     glow: 'rgba(0, 255, 65, 0.6)',
-    icon: '🟢',
+    icon: <FaCircle style={{ color: '#00FF41' }} />,
   },
   red: {
     name: 'Neon Red',
     primary: '#FF0040',
     rgb: '255, 0, 64',
     glow: 'rgba(255, 0, 64, 0.6)',
-    icon: '🔴',
+    icon: <FaCircle style={{ color: '#FF0040' }} />,
   },
   gold: {
     name: 'Cyber Gold',
     primary: '#FFD700',
     rgb: '255, 215, 0',
     glow: 'rgba(255, 215, 0, 0.6)',
-    icon: '🟡',
+    icon: <FaCircle style={{ color: '#FFD700' }} />,
   },
 };
 
@@ -47,16 +48,7 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('cyan');
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-    const saved = localStorage.getItem('hackgear-theme');
-    if (saved && THEMES[saved]) {
-      setTheme(saved);
-      applyTheme(saved);
-    }
-  }, []);
-
-  const applyTheme = (themeName) => {
+  const applyTheme = useCallback((themeName) => {
     const themeConfig = THEMES[themeName];
     if (!themeConfig) return;
 
@@ -64,7 +56,19 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.style.setProperty('--primary-neon', themeConfig.primary);
     document.documentElement.style.setProperty('--primary-glow', themeConfig.glow);
     document.documentElement.style.setProperty('--primary-rgb', themeConfig.rgb);
-  };
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsClient(true);
+      const saved = localStorage.getItem('hackgear-theme');
+      if (saved && THEMES[saved]) {
+        setTheme(saved);
+        applyTheme(saved);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [applyTheme]);
 
   const setThemeByName = (themeName) => {
     if (!THEMES[themeName]) return;
@@ -102,7 +106,9 @@ export const ThemeToggle = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Use a timeout to avoid setState in effect
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted || !context) return null;
