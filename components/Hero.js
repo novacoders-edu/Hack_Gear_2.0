@@ -3,6 +3,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { Countdown } from './Countdown';
 import { GlitchText } from './GlitchText';
+import { FaBolt } from 'react-icons/fa';
 
 // Lazy load Spline component
 const Spline = lazy(() => import('@splinetool/react-spline'));
@@ -210,6 +211,8 @@ export const Hero = () => {
   const [isMobile, setIsMobile] = useState(true);
   const [showSpline, setShowSpline] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [registrationCount, setRegistrationCount] = useState(null);
+  const [isRegistrationClosed, setIsRegistrationClosed] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -226,11 +229,41 @@ export const Hero = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
+    // Check if registration is closed
+    const checkRegistrationStatus = () => {
+      const now = new Date().getTime();
+      const deadline = new Date(registrationDeadline).getTime();
+      setIsRegistrationClosed(now > deadline);
+    };
+
+    checkRegistrationStatus();
+    const interval = setInterval(checkRegistrationStatus, 1000);
+
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(splineTimer);
+      clearInterval(interval);
     };
+  }, []);
+
+  // stats 
+  useEffect(() => {
+    const stats = async () => {
+      try {
+        const response = await fetch("api/registrations");
+        const data = await response.json();
+        if (data.success) {
+          setRegistrationCount(data.total);
+        } else {
+          setRegistrationCount(350);
+        }
+      } catch (error) {
+        console.error("Error fetching registration data:", error);
+        setRegistrationCount(350);
+      }
+    };
+    stats();
   }, []);
 
   const handleSmoothScroll = (e, href) => {
@@ -251,7 +284,7 @@ export const Hero = () => {
     }
   };
   const registrationLink = "https://unstop.com/p/hack-gear-20-national-level-hackathon-by-nova-coders-nova-coders-1612261?lb=gAsqeJDc&utm_medium=Share&utm_source=gaurakum1185&utm_campaign=Online_coding_challenge";
-  const hackathonDate = '2025-02-15T09:00:00';
+  const hackathonDate = '2025-03-28T01:00:00';
   const registrationDeadline = '2026-02-28T23:59:59';
 
   return (
@@ -373,37 +406,93 @@ export const Hero = () => {
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-matrix-green" />
               <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-neon" />
 
-              <div className="flex items-center justify-center gap-2 mb-3 relative z-10">
-                <motion.div
-                  className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
-                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                />
-                <p className="sub-font text-xs sm:text-sm md:text-base text-cyan-neon uppercase tracking-[0.2em] font-black">
-                  REGISTRATION CLOSES IN
-                </p>
-                <motion.div
-                  className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
-                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
-                />
-              </div>
-              <div className="relative z-10">
-                <Countdown targetDate={registrationDeadline} compact />
-              </div>
-              {/* Urgency indicator */}
-              <motion.div
-                className="mt-3 text-center relative z-10"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <p className="sub-font text-[10px] sm:text-xs text-purple-electric/80 uppercase tracking-wider font-bold">
-                  ⚡ Limited Spots Available
-                </p>
-              </motion.div>
-            </motion.div>
+              {!isRegistrationClosed ? (
+                <>
+                  <div className="flex items-center justify-center gap-2 mb-3 relative z-10">
+                    <motion.div
+                      className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
+                      animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                    <p className="sub-font text-xs sm:text-sm md:text-base text-cyan-neon uppercase tracking-[0.2em] font-black">
+                      REGISTRATION CLOSES IN
+                    </p>
+                    <motion.div
+                      className="w-2 h-2 bg-cyan-neon rounded-full shadow-[0_0_10px_#00E0FF]"
+                      animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+                    />
+                  </div>
+                  <div className="relative z-10">
+                    <Countdown targetDate={registrationDeadline} compact />
+                  </div>
+                  {/* Urgency indicator */}
+                  <motion.div
+                    className="mt-3 text-center relative z-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <p className="sub-font text-[10px] sm:text-xs text-purple-electric/80 uppercase tracking-wider font-bold flex items-center justify-center gap-2">
+                      <FaBolt /> Limited Spots Available
+                    </p>
+                  </motion.div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center gap-2 mb-3 relative z-10">
+                    <motion.div
+                      className="w-2 h-2 bg-matrix-green rounded-full shadow-[0_0_10px_#00FF41]"
+                      animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                    <p className="sub-font text-xs sm:text-sm md:text-base text-matrix-green uppercase tracking-[0.2em] font-black">
+                      HACKATHON DATE
+                    </p>
+                    <motion.div
+                      className="w-2 h-2 bg-matrix-green rounded-full shadow-[0_0_10px_#00FF41]"
+                      animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+                    />
+                  </div>
 
+                  {/* Hackathon date display - Compact */}
+                  <motion.div
+                    className="text-center relative z-10 py-2"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <motion.div
+                      animate={{ y: [0, -3, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <p className="heading-font text-2xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-neon via-matrix-green to-purple-electric">
+                        28 MARCH 2026
+                      </p>
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Get Ready message */}
+                  <motion.div
+                    className="mt-2 text-center relative z-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <p className="sub-font text-[10px] sm:text-xs text-matrix-green/80 uppercase tracking-wider font-bold flex items-center justify-center gap-2">
+                      <motion.span
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      >
+                        ⚡
+                      </motion.span>
+                      Get Ready to Innovate
+                    </p>
+                  </motion.div>
+                </>
+              )}
+            </motion.div>
             {/* Info Grid - Compact */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -411,7 +500,7 @@ export const Hero = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="grid grid-cols-3 gap-3 mb-3 sm:mb-4 p-2.5 border-l-2 border-cyan-neon bg-gradient-to-r from-cyan-neon/5 to-transparent rounded-r-md"
             >
-              <StatItem label="DATE" value="TBA" color="text-cyan-neon" delay={0.45} />
+              <StatItem label="DATE" value="28 Mar 2026" color="text-cyan-neon" delay={0.45} />
               <StatItem label="VENUE" value="VIT Campus" color="text-purple-electric" delay={0.5} />
               <StatItem label="SLOTS" value="TBA" color="text-matrix-green" delay={0.55} />
             </motion.div>
@@ -427,7 +516,7 @@ export const Hero = () => {
                 whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(0,224,255,0.4)' }}
                 whileTap={{ scale: 0.98 }}
                 className="group relative w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-neon to-cyan-neon/80 text-black heading-font text-xs sm:text-sm font-black uppercase tracking-wider overflow-hidden rounded"
-                onClick={()=>window.open(registrationLink,'_blank')}
+                onClick={() => window.open(registrationLink, '_blank')}
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
@@ -482,7 +571,7 @@ export const Hero = () => {
                 ))}
               </div>
               <div className="sub-font text-[10px] sm:text-xs">
-                <span className="text-cyan-neon font-bold">09</span> already registered
+                <span className="text-cyan-neon font-bold">{registrationCount || 350}+</span> participants already registered
               </div>
             </motion.div>
           </div>
