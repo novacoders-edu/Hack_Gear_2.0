@@ -1,7 +1,54 @@
-"use client"
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TiltCard } from './TiltCard';
+import { FaClock, FaGlasses, FaDollarSign, FaSync, FaChartLine, FaBolt, FaShieldAlt } from 'react-icons/fa';
+
+// Separate component for card particles to avoid useMemo in render
+const CardParticles = ({ stat, hoveredStat, i }) => {
+  const [particles] = useState(() => {
+    return [...Array(8)].map((_, j) => ({
+      id: j,
+      randomX1: Math.random() * 100,
+      randomY1: Math.random() * 100,
+      randomX2: Math.random() * 100,
+      randomY2: Math.random() * 100,
+      randomDuration: Math.random() * 3 + 2,
+    }));
+  });
+
+  if (!stat.pulse) return null;
+
+  return (
+    <>
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute w-[2px] h-[2px] rounded-full"
+          style={{
+            background: stat.color === 'text-cyan-neon' ? '#00E0FF' :
+              stat.color === 'text-purple-electric' ? '#4D00FF' :
+                stat.color === 'text-matrix-green' ? '#00FF41' : '#FFD700'
+          }}
+          initial={{
+            x: particle.randomX1 + '%',
+            y: particle.randomY1 + '%',
+            opacity: 0
+          }}
+          animate={{
+            x: [null, particle.randomX2 + '%'],
+            y: [null, particle.randomY2 + '%'],
+            opacity: hoveredStat === i ? [0, 1, 0] : 0
+          }}
+          transition={{
+            duration: particle.randomDuration,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+      ))}
+    </>
+  );
+};
 
 export const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,6 +61,22 @@ export const About = () => {
   const countRef = useRef(null);
   const terminalRef = useRef(null);
   const scanLineRef = useRef(null);
+
+  // Generate floating particles once on mount (client-side only)
+  const [floatingParticles, setFloatingParticles] = useState([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    setFloatingParticles([...Array(20)].map((_, i) => ({
+      id: i,
+      randomX1: Math.random() * 100,
+      randomY1: Math.random() * 100,
+      randomX2: Math.random() * 100,
+      randomY2: Math.random() * 100,
+      randomDuration: Math.random() * 10 + 10,
+    })));
+  }, []);
 
   // Enhanced cyberpunk animation for scanning line
   useEffect(() => {
@@ -30,24 +93,7 @@ export const About = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          animateNumbers();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const element = document.getElementById('protocol');
-    if (element) observer.observe(element);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const animateNumbers = () => {
+  const animateNumbers = useCallback(() => {
     const targets = { nodes: 50, agents: 10 , bounty: 25000 };
     const duration = 2000;
     const steps = 60;
@@ -70,7 +116,24 @@ export const About = () => {
         }));
       }, stepDuration);
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          animateNumbers();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const element = document.getElementById('protocol');
+    if (element) observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [animateNumbers]);
 
   const stats = [
     // {
@@ -88,7 +151,22 @@ export const About = () => {
       label: 'HACK_DURATION',
       color: 'text-purple-electric',
       description: 'Continuous protocol synchronization required',
-      icon: '⏱️',
+      icon: (
+        <span className="relative inline-block">
+          <FaClock className="text-blue-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+          {/* Overlay white hands */}
+          <svg
+            className="absolute left-0 top-0 w-full h-full pointer-events-none"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            {/* Hour hand */}
+            <rect x="11.25" y="6" width="1.5" height="6" rx="0.75" fill="white" />
+            {/* Minute hand */}
+            <rect x="11.25" y="12" width="1.5" height="4" rx="0.75" fill="white" transform="rotate(45 12 14)" />
+          </svg>
+        </span>
+      ),
       gradient: 'from-purple-electric/20 to-pink-500/20',
       pulse: false
     },
@@ -98,7 +176,7 @@ export const About = () => {
       label: 'MENTORS',
       color: 'text-matrix-green',
       description: 'Field operatives ready for deployment',
-      icon: '🕶️',
+      icon: <FaGlasses className="text-green-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"/>,
       gradient: 'from-matrix-green/20 to-emerald-500/20',
       pulse: true
     },
@@ -108,7 +186,7 @@ export const About = () => {
       label: 'TOTAL_BOUNTY',
       color: 'text-yellow-400',
       description: 'Total reward pool for protocol disruption',
-      icon: '💰',
+      icon: <FaDollarSign className="text-yellow-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"/>,
       gradient: 'from-yellow-400/20 to-orange-500/20',
       pulse: true
     }
@@ -128,20 +206,20 @@ export const About = () => {
         ></div>
 
         {/* Floating particles */}
-        {[...Array(20)].map((_, i) => (
+        {isClient && floatingParticles.map((particle) => (
           <motion.div
-            key={i}
+            key={particle.id}
             className="absolute w-[1px] h-[1px] bg-cyan-neon rounded-full"
             initial={{
-              x: Math.random() * 100 + '%',
-              y: Math.random() * 100 + '%',
+              x: particle.randomX1 + '%',
+              y: particle.randomY1 + '%',
             }}
             animate={{
-              x: [null, Math.random() * 100 + '%'],
-              y: [null, Math.random() * 100 + '%'],
+              x: [null, particle.randomX2 + '%'],
+              y: [null, particle.randomY2 + '%'],
             }}
             transition={{
-              duration: Math.random() * 10 + 10,
+              duration: particle.randomDuration,
               repeat: Infinity,
               repeatType: "reverse",
               ease: "linear"
@@ -298,7 +376,7 @@ export const About = () => {
                 </p>
 
                 <p className="sub-font text-base md:text-lg text-neutral-400 leading-relaxed">
-                  This is not just another coding competition. This is a <span className="text-purple-electric font-bold">protocol disruption event</span> where you'll collaborate with the brightest minds, decrypt complex challenges, and architect solutions that could redefine entire industries. The future doesn't wait for permission - it gets built by those bold enough to break the code first.
+                  This is not just another coding competition. This is a <span className="text-purple-electric font-bold">protocol disruption event</span> where you&apos;ll collaborate with the brightest minds, decrypt complex challenges, and architect solutions that could redefine entire industries. The future doesn&apos;t wait for permission - it gets built by those bold enough to break the code first.
                 </p>
 
                 <div className="mt-6 pt-6 border-t border-neutral-800/50">
@@ -374,7 +452,7 @@ export const About = () => {
                   BREAK
                 </motion.span>
                 <motion.span
-                  className="inline-block text-cyan-neon neon-text-cyan ml-2"
+                  className="inline-block text-cyan-neon ml-2"
                   initial={{ opacity: 0, x: -20 }}
                   animate={isVisible ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.6, delay: 0.1 }}
@@ -393,7 +471,7 @@ export const About = () => {
                   BUILD
                 </motion.span>
                 <motion.span
-                  className="inline-block text-purple-electric neon-text-purple ml-2"
+                  className="inline-block text-purple-electric ml-2"
                   initial={{ opacity: 0, x: -20 }}
                   animate={isVisible ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.6, delay: 0.3 }}
@@ -410,7 +488,7 @@ export const About = () => {
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                The architecture of tomorrow demands today's disruption
+                The architecture of tomorrow demands today&apos;s disruption
               </motion.p>
             </div>
 
@@ -596,32 +674,7 @@ export const About = () => {
                       />
 
                       {/* Floating particles inside card */}
-                      {stat.pulse && [...Array(8)].map((_, j) => (
-                        <motion.div
-                          key={j}
-                          className="absolute w-[2px] h-[2px] rounded-full"
-                          style={{
-                            background: stat.color === 'text-cyan-neon' ? '#00E0FF' :
-                              stat.color === 'text-purple-electric' ? '#4D00FF' :
-                                stat.color === 'text-matrix-green' ? '#00FF41' : '#FFD700'
-                          }}
-                          initial={{
-                            x: Math.random() * 100 + '%',
-                            y: Math.random() * 100 + '%',
-                            opacity: 0
-                          }}
-                          animate={{
-                            x: [null, Math.random() * 100 + '%'],
-                            y: [null, Math.random() * 100 + '%'],
-                            opacity: hoveredStat === i ? [0, 1, 0] : 0
-                          }}
-                          transition={{
-                            duration: Math.random() * 3 + 2,
-                            repeat: Infinity,
-                            repeatType: "reverse"
-                          }}
-                        />
-                      ))}
+                      <CardParticles stat={stat} hoveredStat={hoveredStat} i={i} />
                     </div>
 
                     {/* Content */}
@@ -753,34 +806,34 @@ export const About = () => {
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              {
-                label: 'OPERATIONS_ACTIVE',
-                value: '24/7',
-                color: 'text-cyan-neon',
-                icon: '🔄',
-                description: 'Round-the-clock neural monitoring'
-              },
-              {
-                label: 'SUCCESS_RATE',
-                value: '98.7%',
-                color: 'text-matrix-green',
-                icon: '📈',
-                description: 'Protocol execution efficiency'
-              },
-              {
-                label: 'RESPONSE_TIME',
-                value: '<2ms',
-                color: 'text-purple-electric',
-                icon: '⚡',
-                description: 'Neural interface latency'
-              },
-              {
-                label: 'UPTIME',
-                value: '99.99%',
-                color: 'text-yellow-400',
-                icon: '🛡️',
-                description: 'System reliability index'
-              }
+             {
+  label: 'OPERATIONS_ACTIVE',
+  value: '24/7',
+  color: 'text-cyan-neon',
+  icon: <FaSync className="text-blue-500" />,
+  description: 'Round-the-clock neural monitoring'
+},
+{
+  label: 'SUCCESS_RATE',
+  value: '98.7%',
+  color: 'text-matrix-green',
+  icon: <FaChartLine className="text-green-500" />,
+  description: 'Protocol execution efficiency'
+},
+{
+  label: 'RESPONSE_TIME',
+  value: '<2ms',
+  color: 'text-purple-electric',
+  icon: <FaBolt className="text-yellow-400" />,
+  description: 'Neural interface latency'
+},
+{
+  label: 'UPTIME',
+  value: '99.99%',
+  color: 'text-yellow-400',
+  icon: <FaShieldAlt className="text-red-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />,
+  description: 'System reliability index'
+}
             ].map((item, idx) => (
               <motion.div
                 key={idx}
