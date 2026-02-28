@@ -155,6 +155,73 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Track 1 & 3: Cyan Neon */
+.border-cyan-neon {
+  border-color: var(--primary-neon, #00E0FF);
+}
+
+.text-cyan-neon {
+  color: var(--primary-neon, #00E0FF);
+}
+
+/* Track 2: Blue Neon */
+.border-blue-neon {
+  border-color: #0080FF;
+}
+
+.text-blue-neon {
+  color: #0080FF;
+}
+
+/* Track 4: Purple Neon */
+.border-purple-neon {
+  border-color: #4D00FF;
+}
+
+.text-purple-neon {
+  color: #4D00FF;
+}
+
+/* Track 5: Green Neon */
+.border-green-neon {
+  border-color: #00FF41;
+}
+
+.text-green-neon {
+  color: #00FF41;
+}
+
+/* Track Hover Effects */
+.hover\:border-blue-neon:hover {
+  border-color: #0080FF;
+}
+
+.hover\:border-purple-neon:hover {
+  border-color: #4D00FF;
+}
+
+.hover\:border-green-neon:hover {
+  border-color: #00FF41;
+}
+
+/* Track Glow Effects */
+.shadow-cyan-neon {
+  box-shadow: 0 0 20px rgba(0, 224, 255, 0.3);
+}
+
+.shadow-blue-neon {
+  box-shadow: 0 0 20px rgba(0, 128, 255, 0.3);
+}
+
+.shadow-purple-neon {
+  box-shadow: 0 0 20px rgba(77, 0, 255, 0.3);
+}
+
+.shadow-green-neon {
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+
 .heading-font {
   font-family: var(--font-orbitron), 'Orbitron', sans-serif;
 }
