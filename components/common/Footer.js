@@ -1,5 +1,5 @@
-
 import React from 'react';
+import Image from 'next/image';
 
 export const Footer = () => {
   return (
@@ -12,7 +12,7 @@ export const Footer = () => {
           <div className="md:col-span-2">
             <div className="flex items-center gap-4 mb-6 md:mb-8">
               <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center relative overflow-hidden group">
-                <img src='/hglogo.png' className="heading-font text-cyan-neon font-black text-lg sm:text-xl border border-cyan-neon rounded-full relative z-10" />
+                <Image src='/hglogo.png' alt="HackGear Logo" width={40} height={40} className="heading-font text-cyan-neon font-black text-lg sm:text-xl border border-cyan-neon rounded-full relative z-10" />
               </div>
               <div className="flex flex-col">
                 <span className="heading-font text-2xl md:text-3xl font-black text-white leading-none">HACK<span className="text-cyan-neon">GEAR 2.0</span></span>
@@ -41,13 +41,70 @@ export const Footer = () => {
             <div>
               <h4 className="heading-font text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-white mb-6 md:mb-10">CHANNELS</h4>
               <ul className="space-y-3 md:space-y-5">
-                {['Linkedin', 'Discord', 'Whatsapp'].map(item => (
-                  <li key={item}>
-                    <a href={`${item.toLocaleLowerCase()}`} className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase">
-                      &gt; {item}
-                    </a>
-                  </li>
-                ))}
+                <li>
+                  <a href="https://www.linkedin.com/company/novacoders007/" className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase">
+                    &gt; Linkedin
+                  </a>
+                </li>
+                {/* <li>
+                  <a href="#" className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase">
+                    &gt; Discord
+                  </a>
+                </li> */}
+                <li>
+                  <a 
+                    href="https://chat.whatsapp.com/L4BLi0jfpcrFrkuQU0vLOp" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase"
+                  >
+                    &gt; WhatsApp Community
+                  </a>
+                </li>
+                 <li>
+    <a
+      href="https://linktr.ee/Events_INFO"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase"
+    >
+      &gt; Events Info
+    </a>
+  </li>
+
+  <li>
+    <a
+      href="https://linktr.ee/codercorps"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase"
+    >
+      &gt; Coder Corps
+    </a>
+  </li>
+
+  <li>
+    <a
+      href="https://bento.me/thestudentspot"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase"
+    >
+      &gt; The Student Spot
+    </a>
+  </li>
+
+  <li>
+    <a
+      href="https://linktr.ee/web3aligarh"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="sub-font text-xs md:text-sm font-bold text-neutral-500 hover:text-purple-electric transition-all tracking-widest uppercase"
+    >
+      &gt; Web3 Aligarh
+    </a>
+  </li>
+
               </ul>
             </div>
           </div>

@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,7 +61,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-cyan-neon/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-            <img src='/hglogo.png' className="heading-font text-cyan-neon font-black text-lg sm:text-xl border border-cyan-neon rounded-full relative z-10" />
+            <Image src='/hglogo.png' alt="HackGear Logo" width={40} height={40} className="heading-font text-cyan-neon font-black text-lg sm:text-xl border border-cyan-neon rounded-full relative z-10" />
           </div>
           <div className="flex flex-col">
             <span className="heading-font text-white font-bold tracking-tighter text-xs sm:text-sm md:text-lg leading-none">HACK<span className="text-cyan-neon">GEAR 2.0</span></span>
