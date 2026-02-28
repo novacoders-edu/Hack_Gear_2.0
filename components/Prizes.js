@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from './Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TiltCard } from './TiltCard';
+import { FaHashtag } from 'react-icons/fa';
 
 const prizeCards = [
   {
@@ -22,7 +23,7 @@ const specialCategories = [
     name: 'TBA', 
     amount: 'TBA',
     description: 'TBA',
-    icon: '⌗',
+    icon: <FaHashtag />,
     criteria: ['Visual Hierarchy', 'Interaction Design', 'Accessibility Compliance']
   }
 ];
