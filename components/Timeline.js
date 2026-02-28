@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TiltCard } from './TiltCard';
+import { FaBullhorn, FaEdit, FaBolt, FaBullseye, FaTrophy } from 'react-icons/fa';
 
 const timelineSteps = [
   { 
@@ -10,15 +11,17 @@ const timelineSteps = [
     desc: 'Announcement of the hackathon.',
     details: 'Official announcement across all channels. Registration portal opens. Early bird benefits available.',
     status: 'Registration Started',
-    icon: '📢'
+    icon: (
+      <FaBullhorn style={{ color: 'red', fontSize: '1.6rem', verticalAlign: 'middle' }} />
+    )
   },
   { 
-    date: 'TBA', 
+    date: '10 Feb 2026', 
     title: 'PS Submission', 
     desc: 'Problem statement submission deadline.',
-    details: 'Submit your innovative problem statements. Our panel will review and select the most impactful challenges.',
-    status: 'Not Started Yet',
-    icon: '📝'
+    details: 'Submit your innovative problem statements in form of PPT. Our panel will review and select the most impactful challenges.',
+    status: 'Submission Started',
+    icon: <FaEdit style={{ color: 'green' }} />
   },
   { 
     date: 'TBA', 
@@ -26,7 +29,7 @@ const timelineSteps = [
     desc: '8H code marathon active.',
     details: 'The main event! 8 hours of intense coding, collaboration, and innovation. Meals and refreshments provided.',
     status: 'Not Started Yet',
-    icon: '⚡'
+    icon: <FaBolt style={{ color: 'yellow' }} />
   },
   { 
     date: 'TBA', 
@@ -34,7 +37,7 @@ const timelineSteps = [
     desc: 'Mentoring sessions with experts.',
     details: 'One-on-one sessions with industry experts. Get guidance on technical challenges and project direction.',
     status: 'Not Started Yet',
-    icon: '🎯'
+    icon: <FaBullseye style={{ color: 'white', background: 'red', borderRadius: '50%', padding: '2px' }} />
   },
   { 
     date: 'TBA', 
@@ -42,7 +45,7 @@ const timelineSteps = [
     desc: 'Winners announced.',
     details: 'Final presentations, judging, and award ceremony. Prizes distributed to top performers.',
     status: 'Not Started Yet',
-    icon: '🏆'
+    icon: <FaTrophy style={{ color: 'yellow' }} />
   }
 ];
 
