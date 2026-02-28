@@ -11,15 +11,18 @@ export const LoadingPage = ({ onComplete }) => {
 
   // Generate particles only on client side
   useEffect(() => {
-    const generatedParticles = [...Array(15)].map((_, i) => ({
-      id: i,
-      initialX: Math.random() * window.innerWidth,
-      initialY: Math.random() * window.innerHeight,
-      targetX: Math.random() * window.innerWidth,
-      targetY: Math.random() * window.innerHeight,
-      duration: Math.random() * 10 + 5,
-    }));
-    setParticles(generatedParticles);
+    const timer = setTimeout(() => {
+      const generatedParticles = [...Array(15)].map((_, i) => ({
+        id: i,
+        initialX: Math.random() * window.innerWidth,
+        initialY: Math.random() * window.innerHeight,
+        targetX: Math.random() * window.innerWidth,
+        targetY: Math.random() * window.innerHeight,
+        duration: Math.random() * 10 + 5,
+      }));
+      setParticles(generatedParticles);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Progress animation
@@ -163,12 +166,12 @@ export const LoadingPage = ({ onComplete }) => {
             key={particle.id}
             className="absolute w-[2px] h-[2px] bg-cyan-neon rounded-full"
             initial={{
-              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1920,
-              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1080,
+              x: particle.initialX,
+              y: particle.initialY,
             }}
             animate={{
-              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1920,
-              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1080,
+              x: particle.targetX,
+              y: particle.targetY,
             }}
             transition={{
               duration: particle.duration,
