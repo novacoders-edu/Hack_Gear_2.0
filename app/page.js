@@ -29,7 +29,7 @@ export default function Home() {
     // Prevent multiple calls
     if (hasCompletedRef.current) return;
     hasCompletedRef.current = true;
-    
+
     // Small delay for smooth transition
     setTimeout(() => {
       setShowContent(true);
@@ -49,13 +49,36 @@ export default function Home() {
     return () => clearTimeout(fallbackTimer);
   }, []); // Empty dependency - runs only once
 
+  // Increment visitor count on page load
+  useEffect(() => {
+    const incrementVisitorCount = async () => {
+      try {
+        const response = await fetch("/api/visitors", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.error("Failed to increment visitor count");
+        }
+      } catch (error) {
+        console.error("Error incrementing visitor count:", error);
+      }
+    };
+
+    incrementVisitorCount();
+  }, []); // Empty dependency - runs only once on page load
+
+
   return (
     <div className="min-h-screen bg-black">
       {/* Permanent black background layer - prevents white flash */}
       <div className="fixed inset-0 bg-black" style={{ zIndex: -100 }} />
       {/* Scroll Progress Bar */}
       <ScrollProgress />
-      
+
       {/* Global Effects */}
       <MatrixRain />
       {/* Loading Screen */}
@@ -77,14 +100,12 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Main content - pre-rendered but hidden */}
-      <div 
+      <div
         className={`w-full transition-opacity duration-700 ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        style={{ 
-          visibility: showContent ? 'visible' : 'hidden',
-        }}
+        style={{visibility: showContent ? 'visible' : 'hidden',}}
       >
         {showContent && <CursorEffect />}
-        
+
         <div className="min-h-screen bg-black text-neutral-100 flex flex-col relative z-10">
           <Navbar />
           <main className="flex-grow">
@@ -100,7 +121,7 @@ export default function Home() {
             <RulesFAQ />
           </main>
           <Footer />
-          
+
           {/* Floating Controls */}
           <SoundEffects />
           <BackToTop />
