@@ -8,11 +8,15 @@ export const CursorEffect = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    // Use a timeout to avoid setState in effect
+    const timer = setTimeout(() => setIsClient(true), 0);
     
     // Check if device supports hover (not touch)
     const hasHover = window.matchMedia('(hover: hover)').matches;
-    if (!hasHover) return;
+    if (!hasHover) {
+      clearTimeout(timer);
+      return;
+    }
 
     let rafId = null;
     let lastX = 0;
@@ -48,6 +52,7 @@ export const CursorEffect = () => {
     document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseleave', handleMouseLeave);

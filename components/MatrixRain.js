@@ -14,8 +14,9 @@ export const MatrixRain = () => {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      setIsVisible(false);
-      return;
+      // Use a timeout to avoid setState in effect
+      const timer = setTimeout(() => setIsVisible(false), 0);
+      return () => clearTimeout(timer);
     }
 
     // Lower resolution for performance

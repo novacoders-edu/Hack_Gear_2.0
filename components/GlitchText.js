@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 export const GlitchText = ({ text, className = '', intensity = 'medium' }) => {
   const [displayText, setDisplayText] = useState(text);
@@ -50,7 +51,7 @@ export const RGBSplitImage = ({ src, alt, className = '' }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <img src={src} alt={alt} className="w-full h-full object-cover" />
+      <Image src={src} alt={alt} width={500} height={500} className="w-full h-full object-cover" />
       
       {isHovered && (
         <div className="absolute inset-0 mix-blend-screen opacity-30 animate-pulse"
