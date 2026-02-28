@@ -2,6 +2,7 @@ import { Inter, Orbitron, Rajdhani } from "next/font/google";
 import "./globals.css";
 import { SoundProvider } from "@/components/SoundManager";
 import { ThemeProvider } from "@/components/ThemeToggle";
+import { CursorEffect } from "@/components/CursorEffect";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -23,13 +24,14 @@ const inter = Inter({
 // ============================================
 // SEO CONFIGURATION - Update these values
 // ============================================
-const SITE_URL = "https://hackgear2-0.vercel.app"; // Change to your actual domain
+const SITE_URL = "https://www.hackgearv2.live"; // Production domain
 const SITE_NAME = "HackGear 2.0";
 const SITE_DESCRIPTION = "HackGear 2.0 - Aligarh's premier 8-hour offline hackathon for beginners at Vision Institute of Technology. Join the coding revolution with prizes, expert mentorship & networking opportunities.";
-const SITE_KEYWORDS = "hackathon Aligarh, HackGear 2.0, coding competition, tech hackathon Aligarh, programming competition, VIT Aligarh hackathon, beginner hackathon, 8 hour hackathon, NovaCoders, tech event UP";
+const SITE_KEYWORDS = "hackathon Aligarh, HackGear 2.0, coding competition, tech hackathon Aligarh, programming competition, VIT Aligarh hackathon, beginner hackathon, 8 hour hackathon, NovaCoders, tech event UP, offline hackathon India, student hackathon, hackathon prizes";
 const OG_IMAGE = "/hackgear.png"; // Add this image to /public folder (1200x630px recommended)
 const TWITTER_HANDLE = "@hackgear"; // Your Twitter handle
-const GOOGLE_VERIFICATION = ""; // Add your Google Search Console verification code
+const GOOGLE_VERIFICATION = "PASTE_GOOGLE_CODE"; // Add your Google Search Console verification code
+const BING_VERIFICATION = "F065C569AEA2451A8474105874C1616D"; // Microsoft Bing Webmaster verification code
 // ============================================
 
 export const metadata = {
@@ -57,6 +59,20 @@ export const metadata = {
         url: "/favicon-32x32.png",
       },
     ],
+  },
+
+  // PWA Manifest
+  manifest: "/manifest.json",
+
+  // Theme colors for browsers
+  themeColor: "#050505",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "HackGear 2.0",
+  },
+  other: {
+    "msapplication-TileColor": "#00E0FF",
   },
 
   // Canonical URL
@@ -109,8 +125,9 @@ export const metadata = {
   // Verification
   verification: {
     google: GOOGLE_VERIFICATION,
-    // yandex: "yandex-verification-code",
-    // bing: "bing-verification-code",
+    other: {
+      'msvalidate.01': BING_VERIFICATION,
+    },
   },
 
   // App specific
@@ -183,7 +200,18 @@ const organizationJsonLd = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="overflow-x-hidden scroll-smooth">
-      <head>
+      <body
+        className={`${orbitron.variable} ${rajdhani.variable} ${inter.variable} matrix-bg circuit-lines bg-cyber-black text-white overflow-x-hidden max-w-[100vw]`}
+      >
+        {/* External Stylesheets */}
+        <link 
+          rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" 
+          crossOrigin="anonymous" 
+          referrerPolicy="no-referrer" 
+        />
+        
         {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
@@ -194,22 +222,9 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         
-        {/* Preconnect to external resources */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Theme color for mobile browsers */}
-        <meta name="theme-color" content="#050505" />
-        <meta name="msapplication-TileColor" content="#00E0FF" />
-        
-        {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
-      </head>
-      <body
-        className={`${orbitron.variable} ${rajdhani.variable} ${inter.variable} matrix-bg circuit-lines bg-cyber-black text-white overflow-x-hidden max-w-[100vw]`}
-      >
         <ThemeProvider>
           <SoundProvider>
+            <CursorEffect/>
             {children}
           </SoundProvider>
         </ThemeProvider>
