@@ -1,157 +1,100 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { TiltCard } from './TiltCard';
 import { FaLinkedin, FaGithub, FaTwitter, FaGlobe, FaYoutube, FaInstagram, FaCrown, FaMedal, FaAward, FaTrophy } from 'react-icons/fa';
 
-const coreTeam = [
-  {
-    name: 'Gaurav Kumar',
-    role: 'Organizer',
-    image: '/coreTeam/gaurav_kumar.jpg',
-    bio: 'Tech community builder focused on organizing impactful hackathons and delivering innovative web and AI-powered solutions with real-world relevance.',
-    department: 'ORGANIZATION',
-    socials: [
-      { platform: "Linkedin", url: "https://www.linkedin.com/in/gaurav-lodhi9090", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/Gauravlodhi530", icon: <FaGithub /> }
-    ]
-  },
-  {
-    name: 'Harsh Vardhan',
-    role: 'Tech Team Lead',
-    image: '/coreTeam/harsh_vardhan.jpg',
-    bio: 'Tech-driven innovator passionate about AI, cybersecurity, and automation, always building solutions that solve real-world problems.',
-    department: 'Technical',
-    socials: [
-      { platform: "Linkedin", url: "http://www.linkedin.com/in/harsh-vardhan-285122235", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/HarshVardhanLab", icon: <FaGithub /> }
-    ]
-  },
-  {
-    name: 'Shivam Pratap Singh',
-    role: 'Operation Team Lead',
-    image: '/coreTeam/shivam.jpg',
-    bio: 'Tech enthusiast & community builder, actively organizing hackathons and tech events. Focused on innovation, problem-solving, and empowering student developers.',
-    department: 'OPERATIONAL',
-    socials: [
-      { platform: "Linkedin", url: "http://www.linkedin.com/in/shivampratap2005", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/2005shivam", icon: <FaGithub /> }
-    ]
-  },
-  {
-    name: 'Hritik Sharma',
-    role: 'PR & Outreach head',
-    image: '/coreTeam/hritik_sharma.jpg',
-    bio: 'Hii Everyone,I am Hritik outreach team head. Love interact with everyone and believe in team work.',
-    department: 'OUTREACH',
-    socials: [
-      { platform: "Linkedin", url: "https://www.linkedin.com/in/hritik-sharma-oct04", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/hritik2004-cse", icon: <FaGithub /> },
-      { platform: "Youtube", url: "https://youtube.com/@hritik_is_coding?si=EM7U9rDmKtjxNrgV", icon: <FaYoutube /> }
-    ]
-  },
-  {
-    name: 'Sandeep Sengar',
-    role: 'Designing & Media',
-    image: '/coreTeam/sandeep_senger.jpg',
-    bio: 'Creative designer and video editor crafting eye-catching visuals with smooth edits and cinematic flow. Turning raw footage into engaging stories that connect and inspire. 🎬✨',
-    department: 'DESIGNING',
-    socials: [
-      { platform: "Linkedin", url: "https://www.linkedin.com/in/sandeep-sengar-227625259", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/Technodark", icon: <FaGithub /> },
-      { platform: "Instagram", url: "https://www.instagram.com/anime_world_light_yagami?igsh=eDU3ZW9yeXFoeDl4", icon: <FaInstagram /> }
-    ]
-  },
-  {
-    name: 'Priyanshu Bhardwaj',
-    role: 'Social Media Manager',
-    image: '/coreTeam/priyanshu_bhardwaj.png',
-    bio: 'Creative Storyteller | Social Media Enthusiast | Engagement Evangelist | Content & Engagement Expert',
-    department: 'SOCIAL MEDIA',
-    socials: [
-      { platform: "Linkedin", url: "https://www.linkedin.com/in/priyanshu-bhardwaj2076/", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://www.github.com/priyanshuxls", icon: <FaGithub /> },
-      { platform: "Instagram", url: "https://m.instagram.com/priyaanshu_.xls", icon: <FaInstagram /> }
-    ]
-  },
-  {
-    name: 'Abhishek Sharma',
-    role: 'Desiging Head',
-    image: '/coreTeam/abhishek_sharma.jpg',
-    bio: 'B.Tech CSE student with a passion for web technology and problem-solving.Always eager to learn, build, and grow through real-world projects and hackathons.',
-    department: 'DESIGNING',
-    socials: [
-      { platform: "Linkedin", url: "https://www.linkedin.com/in/abhishek-sharma-575190251", icon: <FaLinkedin /> },
-      { platform: "Github", url: "https://github.com/engAbhishekSharma", icon: <FaGithub /> },
-      { platform: "Instagram", url: "https://www.instagram.com/_abhisheksharma_10?igsh=YmNuc3M1N2lyN3hp", icon: <FaInstagram /> }
-    ]
-  }
-];
-
-// const pastWinners = [
-//   {
-//     teamName: 'Team Alpha',
-//     position: '1st Place',
-//     rank: 1,
-//     image: '/pastHeros/team-1-vit.jpg',
-//     project: 'AI Healthcare Assistant',
-//     // prize: '₹50,000',
-//     achievement: 'FIRST_PLACE',
-//     college: "VIT Aligarh",
-//     // members: ['John Doe', 'Jane Smith', 'Alex Johnson'],
-//     // bio: 'Developed an AI-powered healthcare assistant that helps patients with preliminary diagnosis and medical advice.',
-//   },
-//   {
-//     teamName: 'Team Cure Coders',
-//     position: '2nd Place',
-//     rank: 2,
-//     image: '/pastHeros/team-2-ds-1.jpg',
-//     project: 'Smart City Dashboard',
-//     // prize: '₹30,000',
-//     achievement: 'SECOND_PLACE',
-//     college: "DS College Aligarh",
-//     // members: ['Sarah Lee', 'Mike Chen', 'Emma Brown'],
-//     // bio: 'Created a comprehensive dashboard for smart city management with real-time data analytics and citizen engagement features.',
-//   },
-//   {
-//     teamName: 'Team Perplexials',
-//     position: '3rd Place',
-//     rank: 3,
-//     image: '/pastHeros/team-3-vit-1.jpg',
-//     project: 'EduLearn Platform',
-//     // prize: '₹20,000',
-//     achievement: 'THIRD_PLACE',
-//     college: "VIT Aligarh",
-//     // members: ['David Wilson', 'Lisa Anderson', 'Tom Harris'],
-//     // bio: 'Built an interactive learning platform with gamification elements to enhance student engagement and learning outcomes.',
-//   },
-//   {
-//     teamName: 'Hack Aura',
-//     position: 'Best Women Team',
-//     rank: 'special',
-//     image: '/pastHeros/team-girls-only-2.jpg',
-//     project: 'SafeHer App',
-//     // prize: '₹25,000',
-//     achievement: 'WOMEN_EXCELLENCE',
-//     college: "VIT Aligarh",
-//     // members: ['Priya Sharma', 'Anjali Verma', 'Neha Gupta'],
-//     // bio: 'Designed a comprehensive women safety app with real-time location tracking, emergency SOS, and community support features.',
-//   },
-// ];
-
-const judges = [
-
-];
-
 export const Team = () => {
+  const token = process.env.NEXT_PUBLIC_HS_API_TOKEN
   const [hoveredCard, setHoveredCard] = useState({ section: null, index: null });
-  const [activeSection, setActiveSection] = useState('core'); // 'core', 'winners', 'judges'
+  const [activeSection, setActiveSection] = useState('judges');
+  const [coreTeam, setCoreTeam] = useState([]);
+  const [judges, setJudges] = useState([]);
+  const [pastWinners, setPastWinners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const sections = [
     { id: 'core', label: 'CORE_TEAM', data: coreTeam },
-    // { id: 'winners', label: 'PAST_WINNERS', data: pastWinners },
+    { id: 'winners', label: 'PAST_WINNERS', data: pastWinners },
     { id: 'judges', label: 'THE_PANEL', data: judges }
   ];
+
+  // Fetch all data on page load
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        // Fetch core team
+        const coreTeamResponse = await fetch("/api/core-team",{
+          headers:{
+            "hg-api-token":token
+          }
+        });
+        const coreTeamResult = await coreTeamResponse.json();
+        if (coreTeamResult.success) {
+          setCoreTeam(
+            coreTeamResult.data.map((member) => ({
+              ...member,
+              socials: member.socials.map((social) => ({
+                ...social,
+                icon:
+                  social.platform === "Linkedin" ? <FaLinkedin /> :
+                  social.platform === "Github" ? <FaGithub /> :
+                  social.platform === "Twitter" ? <FaTwitter /> :
+                  social.platform === "Youtube" ? <FaYoutube /> :
+                  social.platform === "Instagram" ? <FaInstagram /> :
+                  social.platform === "Globe" ? <FaGlobe /> :
+                  null,
+              })),
+            }))
+          );
+        }
+
+        // Fetch judges
+        const judgesResponse = await fetch("/api/judges",{
+          headers:{
+            "hg-api-token":token
+          }
+        });
+        const judgesResult = await judgesResponse.json();
+        if (judgesResult.success) {
+          setJudges(
+            judgesResult.data.map((judge) => ({
+              ...judge,
+              socials: judge.socials.map((social) => ({
+                ...social,
+                icon:
+                  social.platform === "Linkedin" ? <FaLinkedin /> :
+                  social.platform === "Github" ? <FaGithub /> :
+                  social.platform === "Twitter" ? <FaTwitter /> :
+                  social.platform === "Youtube" ? <FaYoutube /> :
+                  social.platform === "Instagram" ? <FaInstagram /> :
+                  social.platform === "Globe" ? <FaGlobe /> :
+                  null,
+              })),
+            }))
+          );
+        }
+
+        // Fetch past winners
+        const winnersResponse = await fetch("/api/past-winners",{
+          headers:{
+            "hg-api-token":token
+          }
+        });
+        const winnersResult = await winnersResponse.json();
+        if (winnersResult.success) {
+          setPastWinners(winnersResult.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [token]);
 
   const getCardDetails = (section, item) => {
     switch (section) {
@@ -186,8 +129,9 @@ export const Team = () => {
         };
     }
   };
+
   return (
-    <section id="teams" className="py-16 md:py-20 bg-cyber-black relative overflow-hidden">
+    <section id="judges" className="py-16 md:py-20 bg-cyber-black relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <motion.div
@@ -246,7 +190,11 @@ export const Team = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          {sections.find(s => s.id === activeSection)?.data.length > 0 ? (
+          {loading ? (
+            <div className="text-center text-white">
+              <p className="text-lg md:text-xl">Loading...</p>
+            </div>
+          ) : sections.find(s => s.id === activeSection)?.data.length > 0 ? (
             <div className={activeSection === 'winners'
               ? "grid grid-cols-1 gap-6 md:gap-8"
               : "grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6"
@@ -276,9 +224,11 @@ export const Team = () => {
                           <div className="grid md:grid-cols-2 gap-0">
                             {/* Image Section - Landscape */}
                             <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden">
-                              <img
+                              <Image
                                 src={item.image}
                                 alt={item.teamName}
+                                width={800}
+                                height={500}
                                 className={`w-full h-full object-cover transition-all duration-700 ${isHovered ? 'scale-105 grayscale-0' : 'scale-100 grayscale'
                                   }`}
                               />
@@ -306,24 +256,6 @@ export const Team = () => {
                                   </span>
                                 </motion.div>
                               </div>
-
-                              {/* Prize Badge */}
-                              {/* <div className="absolute top-4 right-4 z-20">
-                                <div
-                                  className="px-3 py-1 border"
-                                  style={{
-                                    borderColor: accentColor,
-                                    backgroundColor: 'rgba(0,0,0,0.8)'
-                                  }}
-                                >
-                                  <span
-                                    className="heading-font text-lg font-black"
-                                    style={{ color: accentColor }}
-                                  >
-                                    {item.prize}
-                                  </span>
-                                </div>
-                              </div> */}
 
                               {/* Gradient Overlay */}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -371,22 +303,6 @@ export const Team = () => {
                                 <p className="sub-font text-sm text-neutral-400 leading-relaxed mb-6">
                                   {bio}
                                 </p>
-
-                                {/* <div>
-                                  <h5 className="sub-font text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-2">
-                                    TEAM_MEMBERS
-                                  </h5>
-                                  <div className="flex flex-wrap gap-2">
-                                    {item.members.map((member, i) => (
-                                      <span
-                                        key={i}
-                                        className="sub-font text-xs px-2 py-1 border border-neutral-700 text-neutral-300"
-                                      >
-                                        {member}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div> */}
                               </div>
 
                               {/* Decorative Corner */}
@@ -423,11 +339,12 @@ export const Team = () => {
                       intensity={12}
                     >
                       <div className="group relative border border-neutral-800 bg-black overflow-hidden h-full">
-                        {/* ...existing code for core team cards... */}
                         <div className="aspect-[3/4] overflow-hidden relative">
-                          <img
+                          <Image
                             src={item.image}
                             alt={item.name}
+                            width={400}
+                            height={533}
                             className={`w-full h-full object-cover scale-105 transition-all duration-700 ${isHovered ? 'scale-100 grayscale-0' : 'grayscale'
                               }`}
                           />
@@ -445,8 +362,8 @@ export const Team = () => {
 
                           <div className="absolute top-3 left-3 z-20">
                             <span className={`sub-font text-[8px] font-bold uppercase tracking-[0.2em] px-2 py-1 border ${activeSection === 'core' ? 'border-cyan-500 text-cyan-400 bg-cyan-900/20' :
-                                activeSection === 'winners' ? 'border-pink-500 text-pink-400 bg-pink-900/20' :
-                                  'border-purple-500 text-purple-400 bg-purple-900/20'
+                              activeSection === 'winners' ? 'border-pink-500 text-pink-400 bg-pink-900/20' :
+                                'border-purple-500 text-purple-400 bg-purple-900/20'
                               }`}>
                               {accentLabel}
                             </span>
