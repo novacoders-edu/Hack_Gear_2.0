@@ -1,6 +1,6 @@
-"use client"
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const testimonials = [
   {
@@ -94,9 +94,11 @@ export const PastWinners = () => {
                     {/* Image */}
                     <div className="relative flex-shrink-0">
                       <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-purple-electric">
-                        <img 
+                        <Image 
                           src={testimonials[currentIndex].image} 
                           alt={testimonials[currentIndex].name}
+                          width={128}
+                          height={128}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -112,7 +114,7 @@ export const PastWinners = () => {
                       </div>
                       
                       <blockquote className="sub-font text-lg md:text-xl text-neutral-300 italic mb-6 leading-relaxed">
-                        "{testimonials[currentIndex].quote}"
+                        &quot;{testimonials[currentIndex].quote}&quot;
                       </blockquote>
                       
                       <div>
