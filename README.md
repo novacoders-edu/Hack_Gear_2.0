@@ -11,7 +11,6 @@ A cyberpunk-themed landing page for an 8-hour offline hackathon event, built wit
 - **Fonts:** Orbitron, Rajdhani, Inter (Google Fonts)
 
 ## Features
-
 ### Visual Effects
 - **Matrix Rain Background** - Canvas-based animated matrix rain effect
 - **Custom Cursor** - Neon cursor with trail effect (desktop only)
