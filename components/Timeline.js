@@ -24,7 +24,7 @@ const timelineSteps = [
     icon: <FaEdit style={{ color: 'green' }} />
   },
   { 
-    date: 'TBA', 
+    date: '11 Apr 2026', 
     title: 'Hackathon Day', 
     desc: '8H code marathon active.',
     details: 'The main event! 8 hours of intense coding, collaboration, and innovation. Meals and refreshments provided.',
