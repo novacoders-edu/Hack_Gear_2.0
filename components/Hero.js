@@ -284,8 +284,8 @@ export const Hero = () => {
     }
   };
   const registrationLink = "https://unstop.com/p/hack-gear-20-national-level-hackathon-by-nova-coders-nova-coders-1612261?lb=gAsqeJDc&utm_medium=Share&utm_source=gaurakum1185&utm_campaign=Online_coding_challenge";
-  const hackathonDate = '2025-03-28T01:00:00';
-  const registrationDeadline = '2026-02-28T23:59:59';
+  const hackathonDate = '2026-04-11T09:00:00';
+  const registrationDeadline = '2026-03-07T23:59:59';
 
   return (
     <section id='register' className="relative h-screen flex items-center overflow-hidden bg-cyber-black">
@@ -468,7 +468,7 @@ export const Hero = () => {
                       transition={{ duration: 2, repeat: Infinity }}
                     >
                       <p className="heading-font text-2xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-neon via-matrix-green to-purple-electric">
-                        28 MARCH 2026
+                        11 APRIL 2026
                       </p>
                     </motion.div>
                   </motion.div>
@@ -500,7 +500,7 @@ export const Hero = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="grid grid-cols-3 gap-3 mb-3 sm:mb-4 p-2.5 border-l-2 border-cyan-neon bg-gradient-to-r from-cyan-neon/5 to-transparent rounded-r-md"
             >
-              <StatItem label="DATE" value="28 Mar 2026" color="text-cyan-neon" delay={0.45} />
+              <StatItem label="DATE" value="11 Apr 2026" color="text-cyan-neon" delay={0.45} />
               <StatItem label="VENUE" value="VIT Campus" color="text-purple-electric" delay={0.5} />
               <StatItem label="SLOTS" value="TBA" color="text-matrix-green" delay={0.55} />
             </motion.div>
