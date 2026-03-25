@@ -142,8 +142,8 @@ const jsonLd = {
   "@type": "Event",
   name: "HackGear 2.0",
   description: SITE_DESCRIPTION,
-  startDate: "2025-02-15T09:00:00+05:30", // Update with actual date
-  endDate: "2025-02-15T17:00:00+05:30", // Update with actual date (8 hours later)
+  startDate: "2026-04-11T09:00:00+05:30", // Update with actual date
+  endDate: "2026-04-11T17:00:00+05:30", // Update with actual date (8 hours later)
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
