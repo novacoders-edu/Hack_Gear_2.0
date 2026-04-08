@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, Suspense, useCallback } from "react";
-import { FaPlus, FaTrash, FaCopy, FaToggleOn, FaToggleOff } from "react-icons/fa";
+import { FaPlus, FaTrash, FaCopy, FaToggleOn, FaToggleOff, FaArrowLeft } from "react-icons/fa";
+import { motion } from "framer-motion";
 
+const authToken = process.env.NEXT_PUBLIC_HS_API_TOKEN
 function TokenManagement() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [token, setToken] = useState(null); // Store the token
-  const [check, setCheck] = useState(null)
+  const [admin, setAdmin] = useState(null);
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -20,42 +20,37 @@ function TokenManagement() {
 
   useEffect(() => {
     const verifyToken = async () => {
-      const queryToken = searchParams.get("token"); // Get token from query params
-
-      if (!queryToken) {
-        router.push("/"); // Redirect to `/` if token is missing
-        return;
-      }
-
       try {
-        const res = await fetch("/api/tokens/verify", {
+        const res = await fetch("/api/admin/verify", {
+          credentials:"include",
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: queryToken })
         });
 
         const result = await res.json();
 
         if (!result.success) {
-          router.push("/"); // Redirect to `/` if token is invalid
+          router.push("/login");
         } else {
-          setToken(queryToken); // Set the token if valid
+          setAdmin(result.data);
+          setLoading(false)
         }
       } catch (error) {
         console.error("Token verification failed:", error);
-        router.push("/"); // Redirect to `/` on error
+        router.push("/login");
       }
     };
 
     verifyToken();
-  }, [searchParams, router]);
+  }, [router]);
 
   const fetchTokens = useCallback(async () => {
+
     setLoading(true);
     try {
-      const res = await fetch("/api/tokens",{
-        headers:{
-          "hg-api-token":token
+      const res = await fetch("/api/tokens", {
+        headers: {
+          "hg-api-token": authToken
         }
       });
       const data = await res.json();
@@ -65,13 +60,13 @@ function TokenManagement() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
-    if(token){
+    if (admin) {
       fetchTokens();
     }
-  }, [token, check, fetchTokens]);
+  }, [admin, fetchTokens]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -80,7 +75,10 @@ function TokenManagement() {
     try {
       const res = await fetch("/api/tokens", {
         method: "POST",
-        headers: { "Content-Type": "application/json","hg-api-token":token },
+        headers: {
+          "Content-Type": "application/json",
+          "hg-api-token": authToken
+        },
         body: JSON.stringify(formData)
       });
 
@@ -104,9 +102,9 @@ function TokenManagement() {
     try {
       const res = await fetch(`/api/tokens/${id}`, {
         method: "PUT",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "hg-api-token":token
+          "hg-api-token": authToken
         },
         body: JSON.stringify({ isActive: !currentStatus })
       });
@@ -125,8 +123,8 @@ function TokenManagement() {
     try {
       const res = await fetch(`/api/tokens/${id}`, {
         method: "DELETE",
-        headers:{
-          "hg-api-token":token
+        headers: {
+          "hg-api-token": authToken
         }
       });
 
@@ -147,6 +145,16 @@ function TokenManagement() {
   return (
     <div className="min-h-screen bg-cyber-black py-16">
       <div className="container mx-auto px-4">
+        {/* Back Button */}
+        <motion.button
+          onClick={() => router.push("/hg/admin")}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="mb-6 px-4 py-2 bg-neutral-800 border border-neutral-700 text-white font-bold uppercase text-sm flex items-center gap-2 hover:border-cyan-neon transition"
+        >
+          <FaArrowLeft /> Back to Dashboard
+        </motion.button>
+
         <div className="flex justify-between items-center mb-8">
           <h1 className="heading-font text-4xl font-black text-white uppercase">
             API TOKENS<span className="text-cyan-neon">.</span>
@@ -263,9 +271,9 @@ function TokenManagement() {
 }
 
 export default function Page(){
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <TokenManagement/>
-        </Suspense>
-    )
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TokenManagement/>
+    </Suspense>
+  )
 }
