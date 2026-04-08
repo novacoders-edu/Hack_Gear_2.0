@@ -1,56 +1,50 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { FaArrowLeft } from "react-icons/fa";
 
 function StatsPage() {
   const [visitorCount, setVisitorCount] = useState(null);
   const [registrationCount, setRegistrationCount] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [newRegistrationCount, setNewRegistrationCount] = useState(0); // State for updating total registrations
+  const [newRegistrationCount, setNewRegistrationCount] = useState(0);
+  const [admin, setAdmin] = useState(null);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [token, setToken] = useState(null); // Store the token
 
   useEffect(() => {
     const verifyToken = async () => {
-      const queryToken = searchParams.get("token"); // Get token from query params
-
-      if (!queryToken) {
-        router.push("/"); // Redirect to `/` if token is missing
-        return;
-      }
-
       try {
-        const res = await fetch("/api/tokens/verify", {
+        const res = await fetch("/api/admin/verify", {
+          credentials:"include",
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: queryToken })
         });
 
         const result = await res.json();
 
         if (!result.success) {
-          router.push("/"); // Redirect to `/` if token is invalid
+          router.push("/login");
         } else {
-          setToken(queryToken); // Set the token if valid
+          setAdmin(result.data);
+          setLoading(false)
         }
       } catch (error) {
         console.error("Token verification failed:", error);
-        router.push("/"); // Redirect to `/` on error
+        router.push("/login");
       }
     };
 
     verifyToken();
-  }, [searchParams, router]);
-
+  }, [router]);
 
   useEffect(() => {
-    if (token) {
+    if (admin) {
       fetchStats();
     }
-  }, [token]);
+  }, [admin]);
 
   const fetchStats = async () => {
     try {
@@ -70,7 +64,7 @@ function StatsPage() {
       const registrationData = await registrationRes.json();
       if (registrationRes.ok) {
         setRegistrationCount(registrationData.total);
-        setNewRegistrationCount(registrationData.total); // Initialize the input field with the current count
+        setNewRegistrationCount(registrationData.total);
       } else {
         console.error("Failed to fetch registration count:", registrationData.message);
       }
@@ -85,18 +79,17 @@ function StatsPage() {
     try {
       setLoading(true);
 
-      // Send PUT request to update registration count
       const response = await fetch("/api/registrations", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ count: newRegistrationCount }),
+        body: JSON.stringify({ count: newRegistrationCount })
       });
 
       const result = await response.json();
       if (response.ok) {
-        setRegistrationCount(result.total); // Update the displayed count
+        setRegistrationCount(result.total);
       } else {
         console.error("Failed to update registration count:", result.message);
       }
@@ -110,6 +103,16 @@ function StatsPage() {
   return (
     <section className="min-h-screen py-16 bg-cyber-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Back Button */}
+        <motion.button
+          onClick={() => router.push("/hg/admin")}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="mb-6 px-4 py-2 bg-neutral-800 border border-neutral-700 text-white font-bold uppercase text-sm flex items-center gap-2 hover:border-cyan-neon transition"
+        >
+          <FaArrowLeft /> Back to Dashboard
+        </motion.button>
+
         <h1 className="text-4xl font-bold text-white mb-8">Admin Stats</h1>
 
         {loading ? (
@@ -155,9 +158,9 @@ function StatsPage() {
 }
 
 export default function Page(){
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <StatsPage/>
-        </Suspense>
-    )
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StatsPage/>
+    </Suspense>
+  )
 }
