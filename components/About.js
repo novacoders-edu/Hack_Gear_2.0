@@ -5,18 +5,23 @@ import { FaClock, FaGlasses, FaDollarSign, FaSync, FaChartLine, FaBolt, FaShield
 
 // Separate component for card particles to avoid useMemo in render
 const CardParticles = ({ stat, hoveredStat, i }) => {
-  const [particles] = useState(() => {
-    return [...Array(8)].map((_, j) => ({
+  const [particles, setParticles] = useState([]);
+  const [mounted, setMounted] = useState(false);
+
+  // Generate particles only on client side to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    setParticles([...Array(8)].map((_, j) => ({
       id: j,
       randomX1: Math.random() * 100,
       randomY1: Math.random() * 100,
       randomX2: Math.random() * 100,
       randomY2: Math.random() * 100,
       randomDuration: Math.random() * 3 + 2,
-    }));
-  });
+    })));
+  }, []);
 
-  if (!stat.pulse) return null;
+  if (!stat.pulse || !mounted) return null;
 
   return (
     <>
